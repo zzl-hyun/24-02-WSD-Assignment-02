@@ -108,9 +108,12 @@ const SignIn: React.FC = () => {
                 </span>
                 <button disabled={!isLoginFormValid}>Login</button>
               </form>
-              <a href="#" className="account-check" onClick={toggleCard}>
+              {/* <a href="#" className="account-check" onClick={toggleCard}>
                 Already have an account? <b>Sign in</b>
-              </a>
+              </a> */}
+              <button onClick={toggleCard}>
+              Already have an account? <b>Sign in</b>
+              </button>
             </div>
 
             <div className={`card ${isLoginVisible ? 'hidden' : ''}`} id="register">

@@ -1,4 +1,3 @@
-// src/util/movie/URLService.ts
 import axios from 'axios';
 
 class URLService {
