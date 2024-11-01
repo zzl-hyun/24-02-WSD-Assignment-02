@@ -1,26 +1,30 @@
+// src/App.tsx
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import SignIn from './components/sign-in/sign-in';
+import Home from './pages/home';
+// import HomeMain from './components/home/main/HomeMain';
+// import HomePopular from './components/home/popular/HomePopular';
+// import HomeWishlist from './components/home/wishlist/HomeWishlist';
+// import HomeSearch from './components/search/HomeSearch';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {/* 메인 홈 라우트 */}
+        <Route path="/" element={<Home />}>
+          {/* <Route index element={<HomeMain />} />
+          <Route path="popular" element={<HomePopular />} />
+          <Route path="wishlist" element={<HomeWishlist />} />
+          <Route path="search" element={<HomeSearch />} /> */}
+        </Route>
+        
+        {/* 로그인 페이지 */}
+        <Route path="/signin" element={<SignIn />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
