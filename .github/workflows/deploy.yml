@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy React App to GitHub Pages
 
 on:
   push:
@@ -6,17 +6,16 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '16'  # 원하는 Node.js 버전을 선택하세요
 
       - name: Install dependencies
         run: npm install
@@ -28,4 +27,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./build
+          publish_branch: gh-pages
+          publish_dir: ./build  # 빌드 결과물 디렉토리
