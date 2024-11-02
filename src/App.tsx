@@ -1,6 +1,6 @@
 // src/App.tsx
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignIn from './components/sign-in/sign-in';
 import Home from './pages/home';
 // import HomeMain from './components/home/main/HomeMain';

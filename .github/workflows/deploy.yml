@@ -15,16 +15,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'  # 원하는 Node.js 버전을 선택하세요
+          node-version: '16'  # 원하는 Node.js 버전을 선택하세요
 
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
-
+        
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_branch: gh-pages
+          publish_dir: ./build  # 빌드 결과물 디렉토리
