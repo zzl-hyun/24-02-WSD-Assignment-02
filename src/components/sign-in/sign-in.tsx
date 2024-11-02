@@ -30,7 +30,8 @@ const SignIn: React.FC = () => {
     acceptTerms;
 
   // 로그인 성공 시 메인 페이지로 이동
-  const handleLogin = () => {
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const user = users.find(
       (user: any) => user.email === email && user.password === password
@@ -40,6 +41,7 @@ const SignIn: React.FC = () => {
       if (rememberMe) {
         localStorage.setItem('TMDb-Key', password);
       }
+      sessionStorage.setItem('isAuthenticated', 'true'); // Set session flag for authenticated state
       alert('Login successful');
       navigate('/');
     } else {
