@@ -10,7 +10,7 @@ import Home from './pages/home';
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Routes>
         {/* 메인 홈 라우트 */}
         <Route path="/" element={<Home />}>

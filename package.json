@@ -1,8 +1,8 @@
 {
-  "homepage": "https://zzl-hyun.github.io/24-02-WSD-Assignment-02",
   "name": "netflix",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://zzl-hyun.github.io/24-02-WSD-Assignment-02",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
