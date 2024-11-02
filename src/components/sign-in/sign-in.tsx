@@ -64,7 +64,7 @@ const SignIn: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <label htmlFor="email">Username or Email</label>
+                  <label htmlFor="email">Email</label>
                 </div>
                 <div className={`input ${password ? 'active' : ''}`}>
                   <input
@@ -82,12 +82,16 @@ const SignIn: React.FC = () => {
                     checked={rememberMe}
                     onChange={() => setRememberMe(!rememberMe)}
                   />
-                  <label htmlFor="remember">Remember me</label>
+                  <label className="read-text" htmlFor="remember">Remember me</label>
+                </span>
+                <span className="checkbox forgot">
+                  <a href="#">Forgot Password?</a>
                 </span>
                 <button className="signin-button" disabled={!isLoginFormValid}>Login</button>
+
               </form>
               <a href="#" className="account-check" onClick={toggleCard}>
-                Don't have an account? <b>Sign up</b>
+                Already have an account? <b>Sign in</b>
               </a>
             </div>
 
@@ -128,12 +132,12 @@ const SignIn: React.FC = () => {
                     checked={acceptTerms}
                     onChange={() => setAcceptTerms(!acceptTerms)}
                   />
-                  <label htmlFor="terms">I have read Terms and Conditions</label>
+                  <label className="read-text" htmlFor="terms">I have read <b>Terms and Conditions</b></label>
                 </span>
                 <button className="signin-button" disabled={!isRegisterFormValid}>Register</button>
               </form>
               <a href="#" id="gotologin" className="account-check" onClick={toggleCard}>
-                Already have an account? <b>Sign in</b>
+              Don't have an account? <b>Sign up</b>
               </a>
             </div>
           </div>
