@@ -84,7 +84,7 @@ const SignIn: React.FC = () => {
                   />
                   <label htmlFor="remember">Remember me</label>
                 </span>
-                <button disabled={!isLoginFormValid}>Login</button>
+                <button className="signin-button" disabled={!isLoginFormValid}>Login</button>
               </form>
               <a href="#" className="account-check" onClick={toggleCard}>
                 Don't have an account? <b>Sign up</b>
@@ -130,7 +130,7 @@ const SignIn: React.FC = () => {
                   />
                   <label htmlFor="terms">I have read Terms and Conditions</label>
                 </span>
-                <button disabled={!isRegisterFormValid}>Register</button>
+                <button className="signin-button" disabled={!isRegisterFormValid}>Register</button>
               </form>
               <a href="#" id="gotologin" className="account-check" onClick={toggleCard}>
                 Already have an account? <b>Sign in</b>
