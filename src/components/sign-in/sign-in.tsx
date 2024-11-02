@@ -19,8 +19,8 @@ const SignIn: React.FC = () => {
   const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
 
   const navigate = useNavigate();
-  const authService = new AuthService();
 
+  // 유효성 검사
   const isLoginFormValid = email && password;
   const isRegisterFormValid =
     registerEmail &&
@@ -29,38 +29,42 @@ const SignIn: React.FC = () => {
     registerPassword === confirmPassword &&
     acceptTerms;
 
-  useEffect(() => {
-    return () => {
-      // onUnmount 로직이 있다면 이곳에 추가
-    };
-  }, []);
+  // 로그인 성공 시 메인 페이지로 이동
+  const handleLogin = () => {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find(
+      (user: any) => user.email === email && user.password === password
+    );
 
-  const toggleCard = () => {
-    setIsLoginVisible(!isLoginVisible);
-    setTimeout(() => {
-      document.getElementById('register')?.classList.toggle('register-swap');
-      document.getElementById('login')?.classList.toggle('login-swap');
-    }, 50);
-  };
-
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      await AuthService.tryLogin(email, password);
+    if (user) {
+      if (rememberMe) {
+        localStorage.setItem('TMDb-Key', password);
+      }
+      alert('Login successful');
       navigate('/');
-    } catch (error) {
+    } else {
       alert('Login failed');
     }
   };
 
-  const handleRegister = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      await AuthService.tryRegister(registerEmail, registerPassword);
+  // 회원가입 성공 시 로그인 페이지로 전환
+  const handleRegister = () => {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userExists = users.some((user: any) => user.email === registerEmail);
+
+    if (userExists) {
+      alert('User already exists');
+    } else {
+      const newUser = { email: registerEmail, password: registerPassword };
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Registration successful');
       toggleCard();
-    } catch (err) {
-      alert((err as Error).message);
     }
+  };
+
+  const toggleCard = () => {
+    setIsLoginVisible(!isLoginVisible);
   };
 
   return (

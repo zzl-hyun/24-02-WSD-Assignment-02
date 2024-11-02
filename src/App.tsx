@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignIn from './components/sign-in/sign-in';
+import ProtectedRoute from './guards/ProtectedRoute';
 import Home from './pages/home';
 // import HomeMain from './components/home/main/HomeMain';
 // import HomePopular from './components/home/popular/HomePopular';
@@ -12,7 +13,10 @@ const App: React.FC = () => {
     <Router basename={process.env.PUBLIC_URL}>
       <Routes>
         {/* 메인 홈 라우트 */}
-        <Route path="/" element={<Home />}>
+        <Route path="/" element={
+          <ProtectedRoute>
+          <Home />
+          </ProtectedRoute>}>
           {/* <Route index element={<HomeMain />} />
           <Route path="popular" element={<HomePopular />} />
           <Route path="wishlist" element={<HomeWishlist />} />
