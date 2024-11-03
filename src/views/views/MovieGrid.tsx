@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import WishlistService from '../../util/movie/wishlist';
-import {Movie} from '../../models/types';
+import { useWishlistService } from '../../util/movie/wishlist';
+import { Movie } from '../../models/types';
 import styles from './MovieGrid.module.css';
 
 interface MovieGridProps {
@@ -18,7 +18,8 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
   const [wishlistTimer, setWishlistTimer] = useState<number | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
-  const wishlistService = new WishlistService();
+  // Use the wishlist service hook
+  const { wishlist, toggleWishlist, isInWishlist } = useWishlistService();
 
   useEffect(() => {
     fetchMovies();
@@ -98,18 +99,6 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
       const maxRows = Math.floor(containerHeight / (movieCardHeight + verticalGap));
       setMoviesPerPage(rowSize * maxRows);
     }
-  };
-
-  const toggleWishlist = (movie: Movie) => {
-    if (wishlistTimer) clearTimeout(wishlistTimer);
-    const newTimer = window.setTimeout(() => {
-      wishlistService.toggleWishlist(movie);
-    }, 2000);
-    setWishlistTimer(newTimer);
-  };
-
-  const isInWishlist = (movieId: number): boolean => {
-    return wishlistService.isInWishlist(movieId);
   };
 
   return (
