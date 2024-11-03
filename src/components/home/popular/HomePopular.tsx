@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faBars } from '@fortawesome/free-solid-svg-icons';
 import MovieGrid from '../../../views/views/MovieGrid';
-// import MovieInfiniteScroll from '../../views/MovieInfiniteScroll';
+import MovieInfiniteScroll from '../../../views/views/MovieInfiniteScroll';
 import URLService from '../../../util/movie/URL';
 import './HomePopular.css';
 
@@ -55,8 +55,8 @@ const HomePopular: React.FC = () => {
       {currentView === 'grid' ? (
         <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()} />
       ) : (
-        <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()} />
-        // <MovieInfiniteScroll apiKey={apiKey} genreCode="28" sortingOrder="all" voteEverage={-1} />
+        // <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()} />
+        <MovieInfiniteScroll apiKey={apiKey} genreCode="28" sortingOrder="all" voteEverage={-1} />
       )}
     </div>
   );
