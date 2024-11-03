@@ -56,7 +56,7 @@ const HomePopular: React.FC = () => {
         <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()} />
       ) : (
         // <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()} />
-        <MovieInfiniteScroll apiKey={apiKey} genreCode="28" sortingOrder="all" voteEverage={-1} />
+        <MovieInfiniteScroll apiKey={apiKey} genreCode="0" sortingOrder="all" voteEverage={-1} />
       )}
     </div>
   );

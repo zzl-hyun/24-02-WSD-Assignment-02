@@ -8,7 +8,7 @@ import styles from './HomeSearch.module.css';
 
 const HomeSearch: React.FC = () => {
   const apiKey = localStorage.getItem('TMDb-Key') || '';
-  const [genreId, setGenreId] = useState('28');
+  const [genreId, setGenreId] = useState('0');
   const [ageId, setAgeId] = useState(-1);
   const [sortId, setSortId] = useState('all');
 
@@ -20,13 +20,7 @@ const HomeSearch: React.FC = () => {
     Crime: '80',
     Family: '10751',
   };
-
-  const sortingCode: Record<string, string> = {
-    '언어 (전체)': 'all',
-    영어: 'en',
-    한국어: 'ko',
-  };
-
+  
   const ageCode: Record<string, number> = {
     '평점 (전체)': -1,
     '9~10': 9,
@@ -37,7 +31,13 @@ const HomeSearch: React.FC = () => {
     '4~5': 4,
     '4점 이하': -2,
   };
-
+  
+  const sortingCode: Record<string, string> = {
+    '언어 (전체)': 'all',
+    영어: 'en',
+    한국어: 'ko',
+  };
+  
   const changeOptions = (options: SearchOptions) => {
     const newGenreId = genreCode[options.originalLanguage] || '0';
     const newAgeId = ageCode[options.translationLanguage] || -1;

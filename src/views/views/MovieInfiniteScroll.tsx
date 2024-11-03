@@ -11,7 +11,7 @@ interface MovieInfiniteScrollProps {
   voteEverage?: number;
 }
 
-const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, apiKey, sortingOrder = 'all', voteEverage = 100 }) => {
+const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '0', apiKey, sortingOrder = 'all', voteEverage = -1 }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +22,7 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   const observer = useRef<IntersectionObserver | null>(null);
   
   const [rowSize, setRowSize] = useState(4);
-  const [showTopButton, setShowTopButton] = useState(false);
+  const [showTopButton, setShowTopButton] = useState(true); // Ensure this state toggles correctly
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
   // Intersection observer setup
@@ -44,6 +44,7 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   }, [isLoading, hasMore]);
 
   // Fetch movies with duplicate check
+  // Updated fetchMovies to avoid duplicate appending after reset
   const fetchMovies = async () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
@@ -73,8 +74,14 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
         (newMovie) => !movies.some((movie) => movie.id === newMovie.id)
       );
   
-      setMovies((prevMovies) => [...prevMovies, ...uniqueNewMovies]);
-      setCurrentPage((prevPage) => prevPage + 1);
+      // Directly update the movies array
+      if (currentPage === 1) {
+        setMovies(uniqueNewMovies); // Replace movies on reset
+      } else {
+        setMovies([...movies, ...uniqueNewMovies]); // Append new movies
+      }
+  
+      setCurrentPage(currentPage + 1); // Update page count directly
       if (newMovies.length === 0) setHasMore(false);
     } catch (error) {
       console.error('Error fetching movies:', error);
@@ -82,6 +89,8 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
       setIsLoading(false);
     }
   };
+  
+
   
   // Handle resize
   const handleResize = () => {
@@ -93,10 +102,16 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   };
 
   // Handle scroll
+// Update the handleScroll function to set showTopButton more accurately
   const handleScroll = () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    setShowTopButton(scrollTop > 300);
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    if (scrollTop > 300 && !showTopButton) {
+      setShowTopButton(true);
+    } else if (scrollTop <= 300 && showTopButton) {
+      setShowTopButton(false);
+    }
   };
+
 
   useEffect(() => {
     setupIntersectionObserver();
@@ -112,19 +127,17 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   }, [setupIntersectionObserver]);
 
   // Scroll to top and reset movies
-// Function to scroll to top and reset movie data
-const scrollToTopAndReset = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  setMovies([]);
-  setCurrentPage(1);
-  setHasMore(true);
-  fetchMovies();
-};
+  const scrollToTopAndReset = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setMovies([]);
+    setCurrentPage(1);
+    setHasMore(true);
+    fetchMovies();
+  };
 
-useEffect(() => {
-  scrollToTopAndReset(); // Call the reset function on filter changes
-}, [genreCode, sortingOrder, voteEverage]);
-
+  useEffect(() => {
+    scrollToTopAndReset(); // Call the reset function on filter changes
+  }, [genreCode, sortingOrder, voteEverage]);
 
   const getImageUrl = (path: string) => (path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg');
 
@@ -158,7 +171,7 @@ useEffect(() => {
         )}
       </div>
 
-      {showTopButton && (
+      {showTopButton &&(
         <button onClick={scrollToTopAndReset} className={styles.topButton} aria-label="맨 위로 이동">
           Top
         </button>
