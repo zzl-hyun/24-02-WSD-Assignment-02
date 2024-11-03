@@ -1,0 +1,125 @@
+.wishlistIndicator {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 20px;
+  background-color: rgba(229, 9, 20, 0.5);
+  box-shadow: 0 0 5px rgba(229, 9, 20, 0.7);
+}
+
+.movieGrid {
+  width: 100%;
+  height: calc(100vh - 200px);
+  margin-bottom: 40px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.movieRow {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 20px;
+  width: 100%;
+}
+
+.gridContainer.list .movieRow {
+  flex-direction: column;
+}
+
+.movieCard {
+  width: 200px;
+  margin: 0 10px;
+  transition: transform 0.3s;
+  position: relative;
+}
+
+.gridContainer.list .movieCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.movieCard:hover {
+  transform: scale(1.05);
+}
+
+.movieCard img {
+  width: 80%;
+  aspect-ratio: 1/1;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.gridContainer.list .movieCard img {
+  width: 100px;
+  margin-right: 20px;
+}
+
+.movieTitle {
+  margin-top: 5px;
+  text-align: center;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gridContainer.list .movieTitle {
+  text-align: left;
+  white-space: normal;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .movieGrid {
+    height: calc(90svh - 200px);
+  }
+
+  .movieCard {
+    width: 90px;
+    margin: 0 5px;
+  }
+
+  .movieTitle {
+    font-size: 12px;
+  }
+
+  .pagination button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .gridContainer.list .movieCard img {
+    width: 60px;
+  }
+}
