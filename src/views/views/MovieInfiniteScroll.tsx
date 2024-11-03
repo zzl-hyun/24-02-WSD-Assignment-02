@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useWishlistService } from '../../util/movie/wishlist';
-import { Movie, APIResponse } from "../../models/types";
+import { Movie, APIResponse } from '../../models/types';
 import styles from './MovieInfiniteScroll.module.css';
 
 interface MovieInfiniteScrollProps {
@@ -16,44 +16,34 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   const [currentPage, setCurrentPage] = useState(1);
   const [rowSize, setRowSize] = useState(4);
   const [isLoading, setIsLoading] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [hasMore, setHasMore] = useState(true);
   const [showTopButton, setShowTopButton] = useState(false);
 
-  // Use the wishlist service hook
   const { toggleWishlist, isInWishlist } = useWishlistService();
 
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const loadingTriggerRef = useRef<HTMLDivElement>(null);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  useEffect(() => {
-    const resizeListener = () => handleResize();
-    const scrollListener = () => handleScroll();
+  // Intersection observer setup
+  const setupIntersectionObserver = useCallback(() => {
+    if (observer.current) observer.current.disconnect();
 
-    setupIntersectionObserver();
-    fetchMovies();
-    handleResize();
-    window.addEventListener('resize', resizeListener);
-    window.addEventListener('scroll', scrollListener);
-
-    return () => {
-      window.removeEventListener('resize', resizeListener);
-      window.removeEventListener('scroll', scrollListener);
-      if (observer.current) observer.current.disconnect();
-    };
-  }, [apiKey, genreCode, sortingOrder, voteEverage]);
-
-  const setupIntersectionObserver = () => {
     observer.current = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoading && hasMore) fetchMovies();
+        if (entries[0].isIntersecting && !isLoading && hasMore) {
+          fetchMovies();
+        }
       },
       { rootMargin: '100px', threshold: 0.1 }
     );
-    if (loadingTriggerRef.current) observer.current.observe(loadingTriggerRef.current);
-  };
 
+    if (loadingTriggerRef.current) {
+      observer.current.observe(loadingTriggerRef.current);
+    }
+  }, [isLoading, hasMore]);
+
+  // Fetch movies with duplicate check
   const fetchMovies = async () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
@@ -79,7 +69,10 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
         voteEverage === -1 ? true : voteEverage === -2 ? movie.vote_average <= 4 : movie.vote_average >= voteEverage && movie.vote_average < voteEverage + 1
       );
 
-      setMovies((prevMovies) => [...prevMovies, ...newMovies]);
+      // Filter out duplicates
+      const uniqueMovies = newMovies.filter((newMovie) => !movies.some((movie) => movie.id === newMovie.id));
+      
+      setMovies((prevMovies) => [...prevMovies, ...uniqueMovies]);
       setCurrentPage((prevPage) => prevPage + 1);
       if (newMovies.length === 0) setHasMore(false);
     } catch (error) {
@@ -89,21 +82,35 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
     }
   };
 
+  // Handle resize
   const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-    if (gridContainerRef.current) {
-      const containerWidth = gridContainerRef.current.offsetWidth;
-      const movieCardWidth = isMobile ? 100 : 300;
-      const horizontalGap = isMobile ? 10 : 15;
-      setRowSize(Math.floor(containerWidth / (movieCardWidth + horizontalGap)));
-    }
+    const isMobile = window.innerWidth <= 768;
+    const containerWidth = gridContainerRef.current ? gridContainerRef.current.offsetWidth : 0;
+    const movieCardWidth = isMobile ? 100 : 300;
+    const horizontalGap = isMobile ? 10 : 15;
+    setRowSize(Math.floor(containerWidth / (movieCardWidth + horizontalGap)));
   };
 
+  // Handle scroll
   const handleScroll = () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     setShowTopButton(scrollTop > 300);
   };
 
+  useEffect(() => {
+    setupIntersectionObserver();
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+      if (observer.current) observer.current.disconnect();
+    };
+  }, [setupIntersectionObserver]);
+
+  // Scroll to top and reset movies
   const scrollToTopAndReset = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMovies([]);
@@ -116,20 +123,16 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
 
   return (
     <div className={styles.movieGrid} ref={gridContainerRef}>
-      <div className={`${styles.gridContainer} ${isMobile ? styles.mobile : styles.desktop}`}>
+      <div className={`${styles.gridContainer}`}>
         {movies.reduce<Movie[][]>((groups, movie, i) => {
           const groupIndex = Math.floor(i / rowSize);
           if (!groups[groupIndex]) groups[groupIndex] = [];
           groups[groupIndex].push(movie);
           return groups;
         }, []).map((movieGroup, index) => (
-          <div key={index} className={`${styles.movieRow} ${movieGroup.length === rowSize ? styles.full : ''}`}>
+          <div key={index} className={styles.movieRow}>
             {movieGroup.map((movie) => (
-              <div
-                key={movie.id}
-                className={styles.movieCard}
-                onMouseUp={() => toggleWishlist(movie)}
-              >
+              <div key={movie.id} className={styles.movieCard} onMouseUp={() => toggleWishlist(movie)}>
                 <img src={getImageUrl(movie.poster_path)} alt={movie.title} loading="lazy" />
                 <div className={styles.movieTitle}>{movie.title}</div>
                 {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>👍</div>}
