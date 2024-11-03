@@ -7,7 +7,7 @@
   box-shadow: 0 0 5px rgba(229, 9, 20, 0.7);
 }
 
-.movie-grid {
+.movieGrid {
   width: 100%;
   height: calc(100vh - 200px);
   margin-bottom: 40px;
@@ -101,7 +101,7 @@
 }
 
 @media (max-width: 768px) {
-  .movie-grid {
+  .movieGrid {
     height: calc(90svh - 200px);
   }
 
