@@ -16,13 +16,12 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [rowSize, setRowSize] = useState(4);
+  const [showTopButton, setShowTopButton] = useState(true);
 
   const { toggleWishlist, isInWishlist } = useWishlistService();
   const loadingTriggerRef = useRef<HTMLDivElement>(null);
   const observer = useRef<IntersectionObserver | null>(null);
-  
-  const [rowSize, setRowSize] = useState(4);
-  const [showTopButton, setShowTopButton] = useState(true); // Ensure this state toggles correctly
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
   // Intersection observer setup
@@ -44,39 +43,36 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
   }, [isLoading, hasMore]);
 
   // Fetch movies with duplicate check
-  // Updated fetchMovies to avoid duplicate appending after reset
-  const fetchMovies = async () => {
-    if (isLoading || !hasMore) return;
+  const fetchMovies = async (reset = false) => {
+    if (isLoading || (!hasMore && !reset)) return;
     setIsLoading(true);
-
+  
     try {
       const url = genreCode === "0" ? 'https://api.themoviedb.org/3/movie/popular' : 'https://api.themoviedb.org/3/discover/movie';
       const params = {
         api_key: apiKey,
         language: 'ko-KR',
-        page: currentPage,
+        page: reset ? 1 : currentPage,
         ...(genreCode !== "0" && { with_genres: genreCode })
       };
-
+  
       const response = await axios.get<APIResponse>(url, { params });
       let newMovies = response.data.results;
-
+  
       if (sortingOrder !== 'all') {
         newMovies = newMovies.filter((movie) => movie.original_language === sortingOrder);
       }
-
+  
       newMovies = newMovies.filter((movie) =>
         voteEverage === -1 ? true : voteEverage === -2 ? movie.vote_average <= 4 : movie.vote_average >= voteEverage && movie.vote_average < voteEverage + 1
       );
-
-      // Filter out duplicate movies based on ID
+  
       const uniqueNewMovies = newMovies.filter(
         (newMovie) => !movies.some((movie) => movie.id === newMovie.id)
       );
-
-      // Clear movies if currentPage is 1, else append new ones
-      setMovies((prevMovies) => currentPage === 1 ? uniqueNewMovies : [...prevMovies, ...uniqueNewMovies]);
-      setCurrentPage((prevPage) => prevPage + 1);
+  
+      setMovies((prevMovies) => reset ? uniqueNewMovies : [...prevMovies, ...uniqueNewMovies]);
+      setCurrentPage(reset ? 2 : (prevPage) => prevPage + 1);
       if (newMovies.length === 0) setHasMore(false);
     } catch (error) {
       console.error('Error fetching movies:', error);
@@ -85,7 +81,6 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
     }
   };
 
-  
   // Handle resize
   const handleResize = () => {
     const isMobile = window.innerWidth <= 768;
@@ -95,17 +90,11 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
     setRowSize(Math.floor(containerWidth / (movieCardWidth + horizontalGap)));
   };
 
-  // Handle scroll
-// Update the handleScroll function to set showTopButton more accurately
+  // Handle scroll to show/hide "Top" button
   const handleScroll = () => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    if (scrollTop > 300 && !showTopButton) {
-      setShowTopButton(true);
-    } else if (scrollTop <= 300 && showTopButton) {
-      setShowTopButton(false);
-    }
+    setShowTopButton(scrollTop > 300);
   };
-
 
   useEffect(() => {
     setupIntersectionObserver();
@@ -124,20 +113,20 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
   const scrollToTopAndReset = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMovies([]);
-    setCurrentPage(1);
+    // setCurrentPage(1);
     setHasMore(true);
-    fetchMovies();
+    fetchMovies(true); // Call fetchMovies with reset
   };
 
   useEffect(() => {
-    scrollToTopAndReset(); // Call the reset function on filter changes
+    scrollToTopAndReset();
   }, [genreCode, sortingOrder, voteEverage]);
 
   const getImageUrl = (path: string) => (path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg');
 
   return (
     <div className={styles.movieGrid} ref={gridContainerRef}>
-      <div className={`${styles.gridContainer}`}>
+      <div className={styles.gridContainer}>
         {movies.reduce<Movie[][]>((groups, movie, i) => {
           const groupIndex = Math.floor(i / rowSize);
           if (!groups[groupIndex]) groups[groupIndex] = [];
@@ -165,7 +154,7 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
         )}
       </div>
 
-      {showTopButton &&(
+      {showTopButton && (
         <button onClick={scrollToTopAndReset} className={styles.topButton} aria-label="맨 위로 이동">
           Top
         </button>
