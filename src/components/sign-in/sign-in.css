@@ -268,6 +268,7 @@
     padding:27px 30px 46px 30px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.16);
     transition: all 0.4s 0.1s ease;
+    backface-visibility: hidden;
   
     top: 50%;
   
@@ -323,7 +324,6 @@
     background-color:#2069ff;
     box-shadow: 0px 20px 40px rgba(23,83,209,0.8);
     padding:0px 30px 0px 30px;
-  
   }
   
   #register.hidden form {
