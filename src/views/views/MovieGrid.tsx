@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import WishlistService from '../../util/movie/wishlist';
 import {Movie} from '../../models/types';
-import './MovieGrid.css';
+import styles from './MovieGrid.module.css';
 
 interface MovieGridProps {
   fetchUrl: string;
@@ -113,26 +113,26 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
   };
 
   return (
-    <div className="movie-grid" ref={gridContainerRef}>
-      <div className={`grid-container ${isMobile ? 'mobile' : 'desktop'}`}>
+    <div className={styles.movieGrid} ref={gridContainerRef}>
+      <div className={`${styles.gridContainer} ${isMobile ? styles.mobile : styles.desktop}`}>
         {visibleMovieGroups().map((movieGroup, i) => (
-          <div key={i} className={`movie-row ${movieGroup.length === rowSize ? 'full' : ''}`}>
+          <div key={i} className={`${styles.movieRow} ${movieGroup.length === rowSize ? 'full' : ''}`}>
             {movieGroup.map((movie) => (
               <div
                 key={movie.id}
-                className="movie-card"
+                className={styles.movieCard}
                 onMouseUp={() => toggleWishlist(movie)}
               >
                 <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
-                <div className="movie-title">{movie.title}</div>
-                {isInWishlist(movie.id) && <div className="wishlist-indicator">👍</div>}
+                <div className={styles.movieTitle}>{movie.title}</div>
+                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>👍</div>}
               </div>
             ))}
           </div>
         ))}
       </div>
       {totalPages > 1 && (
-        <div className="pagination">
+        <div className={styles.pagination}>
           <button onClick={prevPage} disabled={currentPage === 1}>
             &lt; 이전
           </button>
