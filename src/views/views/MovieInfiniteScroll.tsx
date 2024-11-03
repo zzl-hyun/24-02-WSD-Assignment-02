@@ -14,16 +14,16 @@ interface MovieInfiniteScrollProps {
 const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, apiKey, sortingOrder = 'all', voteEverage = 100 }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowSize, setRowSize] = useState(4);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [showTopButton, setShowTopButton] = useState(false);
 
   const { toggleWishlist, isInWishlist } = useWishlistService();
-
-  const gridContainerRef = useRef<HTMLDivElement>(null);
   const loadingTriggerRef = useRef<HTMLDivElement>(null);
   const observer = useRef<IntersectionObserver | null>(null);
+  
+  const [rowSize, setRowSize] = useState(4);
+  const [showTopButton, setShowTopButton] = useState(false);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
 
   // Intersection observer setup
   const setupIntersectionObserver = useCallback(() => {
@@ -47,32 +47,33 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   const fetchMovies = async () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
-
+  
     try {
       const url = genreCode === "0" ? 'https://api.themoviedb.org/3/movie/popular' : 'https://api.themoviedb.org/3/discover/movie';
       const params = {
         api_key: apiKey,
         language: 'ko-KR',
         page: currentPage,
-        per_page: 10,
         ...(genreCode !== "0" && { with_genres: genreCode })
       };
-
+  
       const response = await axios.get<APIResponse>(url, { params });
       let newMovies = response.data.results;
-
+  
       if (sortingOrder !== 'all') {
         newMovies = newMovies.filter((movie) => movie.original_language === sortingOrder);
       }
-
+  
       newMovies = newMovies.filter((movie) =>
         voteEverage === -1 ? true : voteEverage === -2 ? movie.vote_average <= 4 : movie.vote_average >= voteEverage && movie.vote_average < voteEverage + 1
       );
-
-      // Filter out duplicates
-      const uniqueMovies = newMovies.filter((newMovie) => !movies.some((movie) => movie.id === newMovie.id));
-      
-      setMovies((prevMovies) => [...prevMovies, ...uniqueMovies]);
+  
+      // Filter out duplicate movies based on ID
+      const uniqueNewMovies = newMovies.filter(
+        (newMovie) => !movies.some((movie) => movie.id === newMovie.id)
+      );
+  
+      setMovies((prevMovies) => [...prevMovies, ...uniqueNewMovies]);
       setCurrentPage((prevPage) => prevPage + 1);
       if (newMovies.length === 0) setHasMore(false);
     } catch (error) {
@@ -81,7 +82,7 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
       setIsLoading(false);
     }
   };
-
+  
   // Handle resize
   const handleResize = () => {
     const isMobile = window.innerWidth <= 768;
@@ -111,13 +112,19 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   }, [setupIntersectionObserver]);
 
   // Scroll to top and reset movies
-  const scrollToTopAndReset = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setMovies([]);
-    setCurrentPage(1);
-    setHasMore(true);
-    fetchMovies();
-  };
+// Function to scroll to top and reset movie data
+const scrollToTopAndReset = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setMovies([]);
+  setCurrentPage(1);
+  setHasMore(true);
+  fetchMovies();
+};
+
+useEffect(() => {
+  scrollToTopAndReset(); // Call the reset function on filter changes
+}, [genreCode, sortingOrder, voteEverage]);
+
 
   const getImageUrl = (path: string) => (path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg');
 

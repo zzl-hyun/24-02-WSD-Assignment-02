@@ -39,10 +39,16 @@ const HomeSearch: React.FC = () => {
   };
 
   const changeOptions = (options: SearchOptions) => {
-    setGenreId(genreCode[options.originalLanguage] || '0');
-    setAgeId(ageCode[options.translationLanguage] || -1);
-    setSortId(sortingCode[options.sorting] || 'all');
-  };
+    const newGenreId = genreCode[options.originalLanguage] || '0';
+    const newAgeId = ageCode[options.translationLanguage] || -1;
+    const newSortId = sortingCode[options.sorting] || 'all';
+  
+    setGenreId(newGenreId);
+    setAgeId(newAgeId);
+    setSortId(newSortId);
+    console.log("Sorting:", sortingCode[options.sorting]);
+};
+
 
   return (
     <div className={styles.containerSearch}>
