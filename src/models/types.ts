@@ -9,13 +9,13 @@ export interface SearchOptions {
     id: number;
     title: string;
     poster_path: string;
-    original_language: string;
-    vote_average: number;
     backdrop_path?: string;
     overview?: string;
+    original_language: string;
+    vote_average: number;
   }
   
-  interface APIResponse {
+  export interface APIResponse {
     results: Movie[];
     page: number;
     total_pages: number;
