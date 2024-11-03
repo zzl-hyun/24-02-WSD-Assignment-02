@@ -12,7 +12,7 @@ interface MovieGridProps {
 const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowSize, setRowSize] = useState(4);
+  const [rowSize, setRowSize] = useState(5);
   const [moviesPerPage, setMoviesPerPage] = useState(20);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [wishlistTimer, setWishlistTimer] = useState<number | null>(null);

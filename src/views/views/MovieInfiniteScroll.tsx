@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import WishlistService from '../../util/movie/wishlist';
+import { useWishlistService } from '../../util/movie/wishlist';
 import { Movie, APIResponse } from "../../models/types";
 import styles from './MovieInfiniteScroll.module.css';
 
@@ -19,11 +19,12 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [hasMore, setHasMore] = useState(true);
   const [showTopButton, setShowTopButton] = useState(false);
-  const wishlistService = new WishlistService();
+
+  // Use the wishlist service hook
+  const { toggleWishlist, isInWishlist } = useWishlistService();
 
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const loadingTriggerRef = useRef<HTMLDivElement>(null);
-
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
@@ -112,12 +113,6 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
   };
 
   const getImageUrl = (path: string) => (path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg');
-
-  const toggleWishlist = (movie: Movie) => {
-    wishlistService.toggleWishlist(movie);
-  };
-
-  const isInWishlist = (movieId: number) => wishlistService.isInWishlist(movieId);
 
   return (
     <div className={styles.movieGrid} ref={gridContainerRef}>
