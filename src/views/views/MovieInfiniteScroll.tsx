@@ -48,7 +48,7 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
   const fetchMovies = async () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
-  
+
     try {
       const url = genreCode === "0" ? 'https://api.themoviedb.org/3/movie/popular' : 'https://api.themoviedb.org/3/discover/movie';
       const params = {
@@ -57,31 +57,26 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
         page: currentPage,
         ...(genreCode !== "0" && { with_genres: genreCode })
       };
-  
+
       const response = await axios.get<APIResponse>(url, { params });
       let newMovies = response.data.results;
-  
+
       if (sortingOrder !== 'all') {
         newMovies = newMovies.filter((movie) => movie.original_language === sortingOrder);
       }
-  
+
       newMovies = newMovies.filter((movie) =>
         voteEverage === -1 ? true : voteEverage === -2 ? movie.vote_average <= 4 : movie.vote_average >= voteEverage && movie.vote_average < voteEverage + 1
       );
-  
+
       // Filter out duplicate movies based on ID
       const uniqueNewMovies = newMovies.filter(
         (newMovie) => !movies.some((movie) => movie.id === newMovie.id)
       );
-  
-      // Directly update the movies array
-      if (currentPage === 1) {
-        setMovies(uniqueNewMovies); // Replace movies on reset
-      } else {
-        setMovies([...movies, ...uniqueNewMovies]); // Append new movies
-      }
-  
-      setCurrentPage(currentPage + 1); // Update page count directly
+
+      // Clear movies if currentPage is 1, else append new ones
+      setMovies((prevMovies) => currentPage === 1 ? uniqueNewMovies : [...prevMovies, ...uniqueNewMovies]);
+      setCurrentPage((prevPage) => prevPage + 1);
       if (newMovies.length === 0) setHasMore(false);
     } catch (error) {
       console.error('Error fetching movies:', error);
@@ -89,7 +84,6 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
       setIsLoading(false);
     }
   };
-  
 
   
   // Handle resize
