@@ -1,5 +1,5 @@
 // src/components/SignIn.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../../util/auth/authService';
 import './sign-in.css';
@@ -16,6 +16,17 @@ const SignIn: React.FC = () => {
 
   const navigate = useNavigate();
 
+  // remember me
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('rememberedEmail');
+    const storedPassword = localStorage.getItem('rememberedPassword');
+    if (storedEmail && storedPassword) {
+      setEmail(storedEmail);
+      setPassword(storedPassword);
+      setRememberMe(true);
+    }
+  }, []);
+
   const isLoginFormValid = email && password;
   const isRegisterFormValid = registerEmail && registerPassword && confirmPassword === registerPassword && acceptTerms;
 
@@ -23,6 +34,13 @@ const SignIn: React.FC = () => {
     e.preventDefault();
     try {
       await AuthService.tryLogin(email, password);
+      if(rememberMe){
+        localStorage.setItem('rememberedEmail', email);
+        localStorage.setItem('rememberedPassword', password);
+      }else{
+        localStorage.removeItem('rememberedEmail');
+        localStorage.removeItem('rememberedPassword');
+      }
       alert('Login successful');
       navigate('/');
     } catch (error) {
