@@ -21,7 +21,6 @@ const SignIn: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       await AuthService.tryLogin(email, password);
       alert('Login successful');
@@ -46,7 +45,12 @@ const SignIn: React.FC = () => {
   };
   
 
-  const toggleCard = () => setIsLoginVisible(!isLoginVisible);
+  // const toggleCard = () => setIsLoginVisible(!isLoginVisible);
+  const toggleCard = () => {
+    console.log("Toggling card visibility");
+    setIsLoginVisible(!isLoginVisible);
+  };
+  
 
   return (
     <div>
@@ -85,12 +89,12 @@ const SignIn: React.FC = () => {
                   <label className="read-text" htmlFor="remember">Remember me</label>
                 </span>
                 <span className="checkbox forgot">
-                  <a href="#">Forgot Password?</a>
+                  <a href="javascript:void(0)">Forgot Password?</a>
                 </span>
                 <button className="signin-button" disabled={!isLoginFormValid}>Login</button>
 
               </form>
-              <a href="#" className="account-check" onClick={toggleCard}>
+              <a href="javascript:void(0)" className="account-check" onClick={toggleCard}>
                 Already have an account? <b>Sign in</b>
               </a>
             </div>
@@ -136,7 +140,7 @@ const SignIn: React.FC = () => {
                 </span>
                 <button className="signin-button" disabled={!isRegisterFormValid}>Register</button>
               </form>
-              <a href="#" id="gotologin" className="account-check" onClick={toggleCard}>
+              <a href="javascript:void(0)" id="gotologin" className="account-check" onClick={toggleCard}>
               Don't have an account? <b>Sign up</b>
               </a>
             </div>
