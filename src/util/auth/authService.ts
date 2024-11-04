@@ -12,7 +12,8 @@ export default class AuthService {
         } else {
           sessionStorage.setItem('TMDb-Key', password); // 체크되지 않은 경우 sessionStorage에 저장
         }
-        sessionStorage.setItem('isAuthenticated', 'true'); // 인증 상태 설정
+        // sessionStorage.setItem('isAuthenticated', 'true'); // 인증 상태 설정
+        localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 설정
         resolve(user);
       } else {
         reject(new Error('Login failed'));
