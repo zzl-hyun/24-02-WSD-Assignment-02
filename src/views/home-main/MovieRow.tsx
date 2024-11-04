@@ -34,9 +34,10 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl, wishlistService })
   const fetchMovies = async () => {
     try {
       const response = await axios.get(fetchUrl);
-      setMovies(response.data.results);
+      setMovies(response.data.results || []); // Set movies to an empty array if results are undefined
     } catch (error) {
       console.error('Error fetching movies:', error);
+      setMovies([]); // Set to empty array if there’s an error
     }
   };
 

@@ -1,0 +1,77 @@
+.dropdownContainer {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .customSelect {
+    min-width: 120px;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .selectSelected {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border: 1px solid #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .selectItems {
+    display: block;
+    position: absolute;
+    background-color: #333;
+    border: 1px solid #fff;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+  
+  .selectItems div {
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .selectItems div:hover {
+    background-color: #575757;
+  }
+  
+  .selectArrowActive:after {
+    content: "\25B2";
+    position: absolute;
+    right: 10px;
+    top: 14px;
+  }
+  
+  .selectSelected:after {
+    content: "\25BC";
+    position: absolute;
+    right: 10px;
+    top: 14px;
+  }
+  
+  .selectSelected.selectArrowActive:after {
+    content: "\25B2";
+  }
+  
+  .clearOptions {
+    min-width: 120px;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border: 1px solid #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 0 !important;
+  }
+  
+  .clearOptions:hover {
+    background-color: #333;
+  }
+  

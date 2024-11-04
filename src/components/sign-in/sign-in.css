@@ -14,7 +14,8 @@
      left: 0;
      right: 0;
      bottom: 0;
-     background-image: url('https://images.unsplash.com/photo-1507041957456-9c397ce39c97?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+     /* background-image: url('https://images.unsplash.com/photo-1507041957456-9c397ce39c97?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
+     background-image: url(../../../public/KR-ko-20241028-TRIFECTA-perspective_f2398a80-2c24-4907-b982-bb2fda80136a_medium.jpg);
      background-size: cover;
      background-position: center;
    }
@@ -26,7 +27,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(27, 27, 27, 0.90);
+    background-color: rgba(27, 27, 27, 0.75);
   }
   
   a {
@@ -119,7 +120,7 @@
     color:#272727;
   }
   
-  button {
+  .signin-button {
     display:block;
     border-radius:50px;
     border:none;
@@ -133,7 +134,7 @@
     transition: all 0.2s ease;
   }
   
-  button:hover {
+  .signin-button:hover {
     box-shadow: 0px 2px 10px rgba(23,83,209,0.4)
   }
   
@@ -268,6 +269,7 @@
     padding:27px 30px 46px 30px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.16);
     transition: all 0.4s 0.1s ease;
+    backface-visibility: hidden;
   
     top: 50%;
   
@@ -323,7 +325,6 @@
     background-color:#2069ff;
     box-shadow: 0px 20px 40px rgba(23,83,209,0.8);
     padding:0px 30px 0px 30px;
-  
   }
   
   #register.hidden form {

@@ -51,10 +51,15 @@ const HomeMain: React.FC = () => {
     <div className="home">
       <Banner movie={featuredMovie} />
 
-      // MovieRow 컴포넌트를 호출할 때 `wishlistService` prop을 추가합니다.
+      {popularMoviesUrl && (
         <MovieRow title="인기 영화" fetchUrl={popularMoviesUrl} wishlistService={wishlistService} />
+      )}
+      {newReleasesUrl && (
         <MovieRow title="최신 영화" fetchUrl={newReleasesUrl} wishlistService={wishlistService} />
+      )}
+      {actionMoviesUrl && (
         <MovieRow title="액션 영화" fetchUrl={actionMoviesUrl} wishlistService={wishlistService} />
+      )}
 
       <div className="icons">
         <FontAwesomeIcon icon={faSearch} />

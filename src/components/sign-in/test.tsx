@@ -1,5 +1,4 @@
-// src/components/SignIn.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../../util/auth/authService';
 import './sign-in.css';
@@ -16,17 +15,6 @@ const SignIn: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // remember me
-  useEffect(() => {
-    const storedEmail = localStorage.getItem('rememberedEmail');
-    const storedPassword = localStorage.getItem('rememberedPassword');
-    if (storedEmail && storedPassword) {
-      setEmail(storedEmail);
-      setPassword(storedPassword);
-      setRememberMe(true);
-    }
-  }, []);
-
   const isLoginFormValid = email && password;
   const isRegisterFormValid = registerEmail && registerPassword && confirmPassword === registerPassword && acceptTerms;
 
@@ -34,13 +22,6 @@ const SignIn: React.FC = () => {
     e.preventDefault();
     try {
       await AuthService.tryLogin(email, password);
-      if(rememberMe){
-        localStorage.setItem('rememberedEmail', email);
-        localStorage.setItem('rememberedPassword', password);
-      }else{
-        localStorage.removeItem('rememberedEmail');
-        localStorage.removeItem('rememberedPassword');
-      }
       alert('Login successful');
       navigate('/');
     } catch (error) {
@@ -49,6 +30,7 @@ const SignIn: React.FC = () => {
   };
 
   const handleRegister = async () => {
+    if (!isRegisterFormValid) return;
     try {
       await AuthService.tryRegister(registerEmail, registerPassword);
       alert('Registration successful');
@@ -61,14 +43,8 @@ const SignIn: React.FC = () => {
       }
     }
   };
-  
 
-  // const toggleCard = () => setIsLoginVisible(!isLoginVisible);
-  const toggleCard = () => {
-    console.log("Toggling card visibility");
-    setIsLoginVisible(!isLoginVisible);
-  };
-  
+  const toggleCard = () => setIsLoginVisible(!isLoginVisible);
 
   return (
     <div>
@@ -76,6 +52,8 @@ const SignIn: React.FC = () => {
       <div className="container">
         <div id="phone">
           <div id="content-wrapper">
+            
+            {/* Login Card */}
             <div className={`card ${!isLoginVisible ? 'hidden' : ''}`} id="login">
               <form onSubmit={handleLogin}>
                 <h1>Sign in</h1>
@@ -107,18 +85,22 @@ const SignIn: React.FC = () => {
                   <label className="read-text" htmlFor="remember">Remember me</label>
                 </span>
                 <span className="checkbox forgot">
-                  <a href="javascript:void(0)">Forgot Password?</a>
+                  <a href="#">Forgot Password?</a>
                 </span>
                 <button className="signin-button" disabled={!isLoginFormValid}>Login</button>
-
               </form>
-              <a href="javascript:void(0)" className="account-check" onClick={toggleCard}>
+              <a
+                href="#"
+                className="account-check"
+                onClick={(e) => { e.preventDefault(); toggleCard(); }}
+              >
                 Already have an account? <b>Sign in</b>
               </a>
             </div>
 
+            {/* Register Card */}
             <div className={`card ${isLoginVisible ? 'hidden' : ''}`} id="register">
-              <form onSubmit={handleRegister}>
+              <div>
                 <h1>Sign up</h1>
                 <div className={`input ${registerEmail ? 'active' : ''}`}>
                   <input
@@ -156,12 +138,23 @@ const SignIn: React.FC = () => {
                   />
                   <label className="read-text" htmlFor="terms">I have read <b>Terms and Conditions</b></label>
                 </span>
-                <button className="signin-button" disabled={!isRegisterFormValid}>Register</button>
-              </form>
-              <a href="javascript:void(0)" id="gotologin" className="account-check" onClick={toggleCard}>
-              Don't have an account? <b>Sign up</b>
+                <button
+                  className="signin-button"
+                  onClick={handleRegister}
+                  disabled={!isRegisterFormValid}
+                >
+                  Register
+                </button>
+              </div>
+              <a
+                href="#"
+                className="account-check"
+                onClick={(e) => { e.preventDefault(); toggleCard(); }}
+              >
+                Don't have an account? <b>Sign up</b>
               </a>
             </div>
+            
           </div>
         </div>
       </div>
