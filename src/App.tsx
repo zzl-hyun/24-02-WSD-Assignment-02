@@ -1,5 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+
 import SignIn from './components/sign-in/sign-in';
 import ProtectedRoute from './guards/ProtectedRoute';
 import Home from './pages/home';
@@ -10,7 +12,9 @@ import HomeSearch from './components/search/HomeSearch';
 
 const App: React.FC = () => {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    // <Router basename={process.env.PUBLIC_URL}>
+    <Router> 
+    
       <Routes>
         {/* Main Home Route */}
         <Route
