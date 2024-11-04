@@ -7,14 +7,14 @@ import './Header.css';
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  // const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
-    // Detect if the device is mobile based on the User-Agent
-    useEffect(() => {
-      const userAgent = navigator.userAgent || navigator.vendor;
-      setIsMobile(/Mobi|Android/i.test(userAgent));
-    }, []);
+    // // Detect if the device is mobile based on the User-Agent
+    // useEffect(() => {
+    //   const userAgent = navigator.userAgent || navigator.vendor;
+    //   setIsMobile(/Mobi|Android/i.test(userAgent));
+    // }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,7 +46,7 @@ const Header: React.FC = () => {
             </Link>
           </div>
           {/* Show desktop navigation only if not on mobile */}
-          {!isMobile && (
+          {true && (
             <nav className="nav-links desktop-nav">
               <ul>
                 <li><Link to="/">홈</Link></li>
@@ -62,7 +62,7 @@ const Header: React.FC = () => {
             <FontAwesomeIcon icon={faUser} />
           </button>
           {/* Show mobile menu button only if on mobile */}
-          {isMobile && (
+          {true && (
             <button className="icon-button mobile-menu-button" onClick={toggleMobileMenu}>
               <FontAwesomeIcon icon={faBars} />
             </button>
@@ -71,7 +71,7 @@ const Header: React.FC = () => {
       </header>
 
       {/* Mobile Navigation */}
-      {isMobile && (
+      {true && (
         <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           <button className="close-button" onClick={toggleMobileMenu}>
             <FontAwesomeIcon icon={faTimes} />
