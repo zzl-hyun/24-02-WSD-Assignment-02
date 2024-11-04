@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { Movie } from '../../models/types';
-import WishlistService from '../../util/movie/wishlist';
+import { useWishlistService } from '../../util/movie/wishlist';
 import styles from './MovieGrid.module.css';
 
 interface MovieGridProps {
@@ -16,7 +16,9 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
   const [moviesPerPage, setMoviesPerPage] = useState(20);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  const wishlistService = new WishlistService();
+  // const wishlistService = new WishlistService();
+  const { wishlist, toggleWishlist, isInWishlist} = useWishlistService();
+  
 
   const fetchMovies = async () => {
     try {
@@ -113,14 +115,14 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
               <div
                 key={movie.id}
                 className={styles.movieCard}
-                onMouseUp={() => wishlistService.toggleWishlist(movie)}
+                onMouseUp={() => toggleWishlist(movie)}
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
                   alt={movie.title}
                 />
                 <div className={styles.movieTitle}>{movie.title}</div>
-                {wishlistService.isInWishlist(movie.id) && (
+                {isInWishlist(movie.id) && (
                   <div className={styles.wishlistIndicator}>👍</div>
                 )}
               </div>
