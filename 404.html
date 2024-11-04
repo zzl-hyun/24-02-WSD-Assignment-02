@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page Not Found</title>
-    <script type="text/javascript">
-      // Redirect to the root of the app
-      window.location.href = window.location.origin + window.location.pathname;
-    </script>
+    <meta http-equiv="refresh" content="0; URL='https://zzl-hyun.github.io/24-02-WSD-Assignment-02/'" />
   </head>
   <body>
-    <h1>Page Not Found</h1>
-    <p>Redirecting to the app...</p>
+    <script>
+      // Redirect all paths back to index.html with the same path
+      window.location.replace(window.location.pathname.replace(/^(?!.*24-02-WSD-Assignment-02).*/, '/24-02-WSD-Assignment-02') + window.location.search + window.location.hash);
+    </script>
   </body>
 </html>
