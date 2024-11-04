@@ -1,43 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
-import { useWishlistService } from '../../util/movie/wishlist';
 import { Movie } from '../../models/types';
+import WishlistService from '../../util/movie/wishlist';
 import styles from './MovieGrid.module.css';
 
 interface MovieGridProps {
   fetchUrl: string;
-  title?: string;
+  title: string;
 }
 
 const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowSize, setRowSize] = useState(5);
+  const [rowSize, setRowSize] = useState(4);
   const [moviesPerPage, setMoviesPerPage] = useState(20);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [wishlistTimer, setWishlistTimer] = useState<number | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
-
-  // Use the wishlist service hook
-  const { wishlist, toggleWishlist, isInWishlist } = useWishlistService();
-
-  useEffect(() => {
-    fetchMovies();
-    calculateLayout();
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      calculateLayout();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (wishlistTimer) {
-        clearTimeout(wishlistTimer);
-      }
-    };
-  }, [fetchUrl]);
+  const wishlistService = new WishlistService();
 
   const fetchMovies = async () => {
     try {
@@ -49,88 +28,117 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
         const response = await axios.get(fetchUrl, {
           params: {
             page,
-            per_page: moviesPerPage,
+            per_page: 20,
           },
         });
         allMovies = [...allMovies, ...response.data.results];
       }
 
       setMovies(allMovies.slice(0, totalMoviesNeeded));
+      calculateLayout(); // Adjust layout after setting movies
     } catch (error) {
       console.error('Error fetching movies:', error);
     }
   };
 
-  const getImageUrl = (path: string) => `https://image.tmdb.org/t/p/w300${path}`;
+  useEffect(() => {
+    fetchMovies();
+    window.addEventListener('resize', handleResize);
 
-  const visibleMovieGroups = (): Movie[][] => {
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const handleResize = useCallback(() => {
+    setIsMobile(window.innerWidth <= 768);
+    calculateLayout();
+  }, []);
+
+  const calculateLayout = useCallback(() => {
+    if (gridContainerRef.current) {
+      const container = gridContainerRef.current;
+      const containerWidth = container.offsetWidth;
+      const containerHeight = window.innerHeight - container.offsetTop;
+      const movieCardWidth = isMobile ? 90 : 200;
+      const movieCardHeight = isMobile ? 150 : 220;
+      const horizontalGap = isMobile ? 10 : 15;
+      const verticalGap = -10;
+
+      const newRowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
+      const maxRows = Math.floor(containerHeight / (movieCardHeight + verticalGap));
+      const newMoviesPerPage = newRowSize * maxRows;
+
+      setRowSize(newRowSize);
+      setMoviesPerPage(newMoviesPerPage);
+    }
+  }, [isMobile]);
+
+  const visibleMovieGroups = useCallback(() => {
     const startIndex = (currentPage - 1) * moviesPerPage;
     const endIndex = startIndex + moviesPerPage;
     const paginatedMovies = movies.slice(startIndex, endIndex);
 
     return paginatedMovies.reduce<Movie[][]>((resultArray, item, index) => {
       const groupIndex = Math.floor(index / rowSize);
-      if (!resultArray[groupIndex]) resultArray[groupIndex] = [];
+      if (!resultArray[groupIndex]) {
+        resultArray[groupIndex] = [];
+      }
       resultArray[groupIndex].push(item);
       return resultArray;
     }, []);
-  };
-
-  const totalPages = Math.ceil(movies.length / moviesPerPage);
+  }, [currentPage, movies, moviesPerPage, rowSize]);
 
   const nextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < Math.ceil(movies.length / moviesPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const prevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const calculateLayout = () => {
-    if (gridContainerRef.current) {
-      const containerWidth = gridContainerRef.current.offsetWidth;
-      const containerHeight = window.innerHeight - gridContainerRef.current.offsetTop;
-      const movieCardWidth = isMobile ? 90 : 200;
-      const movieCardHeight = isMobile ? 150 : 220;
-      const horizontalGap = isMobile ? 10 : 15;
-      const verticalGap = -10;
-
-      setRowSize(Math.floor(containerWidth / (movieCardWidth + horizontalGap)));
-      const maxRows = Math.floor(containerHeight / (movieCardHeight + verticalGap));
-      setMoviesPerPage(rowSize * maxRows);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
     }
   };
 
   return (
     <div className={styles.movieGrid} ref={gridContainerRef}>
-      <div className={`${styles.gridContainer} ${isMobile ? styles.mobile : styles.desktop}`}>
-        {visibleMovieGroups().map((movieGroup, i) => (
-          <div key={i} className={`${styles.movieRow} ${movieGroup.length === rowSize ? 'full' : ''}`}>
+      <div className={styles.gridContainer}>
+        {visibleMovieGroups().map((movieGroup, index) => (
+          <div
+            key={index}
+            className={`${styles.movieRow} ${movieGroup.length === rowSize ? styles.movieRowFull : ''}`}
+          >
             {movieGroup.map((movie) => (
               <div
                 key={movie.id}
                 className={styles.movieCard}
-                onMouseUp={() => toggleWishlist(movie)}
+                onMouseUp={() => wishlistService.toggleWishlist(movie)}
               >
-                <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
+                <img
+                  src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                  alt={movie.title}
+                />
                 <div className={styles.movieTitle}>{movie.title}</div>
-                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>👍</div>}
+                {wishlistService.isInWishlist(movie.id) && (
+                  <div className={styles.wishlistIndicator}>👍</div>
+                )}
               </div>
             ))}
           </div>
         ))}
       </div>
-      {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button onClick={prevPage} disabled={currentPage === 1}>
-            &lt; 이전
-          </button>
-          <span>{currentPage} / {totalPages}</span>
-          <button onClick={nextPage} disabled={currentPage === totalPages}>
-            다음 &gt;
-          </button>
-        </div>
-      )}
+      <div className={styles.pagination}>
+        <button onClick={prevPage} disabled={currentPage === 1}>
+          &lt; 이전
+        </button>
+        <span>
+          {currentPage} / {Math.ceil(movies.length / moviesPerPage)}
+        </span>
+        <button onClick={nextPage} disabled={currentPage === Math.ceil(movies.length / moviesPerPage)}>
+          다음 &gt;
+        </button>
+      </div>
     </div>
   );
 };
