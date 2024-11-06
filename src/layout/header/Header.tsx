@@ -36,6 +36,7 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const user = localStorage.getItem('currentUser') || '';
   return (
     <div id="container">
       <header className={`app-header ${isScrolled ? 'scrolled' : ''}`}>
@@ -58,7 +59,9 @@ const Header: React.FC = () => {
           )}
         </div>
         <div className="header-right">
+          <span>welcome!! {user}</span>
           <button className="icon-button" onClick={removeKey}>
+            <span>로그아웃</span>
             <FontAwesomeIcon icon={faUser} />
           </button>
           {/* Show mobile menu button only if on mobile */}

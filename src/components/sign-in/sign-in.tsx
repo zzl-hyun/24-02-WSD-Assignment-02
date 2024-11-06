@@ -41,6 +41,7 @@ const SignIn: React.FC = () => {
         localStorage.removeItem('rememberedEmail');
         localStorage.removeItem('rememberedPassword');
       }
+      localStorage.setItem('currentUser', email);
       alert('Login successful');
       navigate('/');
     } catch (error) {
