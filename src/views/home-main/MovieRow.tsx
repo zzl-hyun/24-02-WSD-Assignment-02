@@ -16,11 +16,12 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const sliderWindowRef = useRef<HTMLDivElement>(null);
   const [maxScroll, setMaxScroll] = useState(0);
+  const [hoveredMovieId, setHoveredMovieId] = useState<number | null>(null); // Hover 상태를 추적하는 state
   const { toggleWishlist, isInWishlist } = useWishlistService();
 
   useEffect(() => {
     fetchMovies();
-  }, [fetchUrl]);  // fetchUrl이 변경되면 새로운 데이터를 가져옵니다.
+  }, [fetchUrl]);
 
   const fetchMovies = useCallback(async () => {
     try {
@@ -49,6 +50,23 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
     };
   }, [movies, calculateMaxScroll]);
 
+
+
+  useEffect(() => {
+    const sliderContainer = sliderWindowRef.current;
+    if (sliderContainer) {
+      const handleWheel = (event: WheelEvent) => {
+        event.preventDefault(); // 기본 브라우저 스크롤 방지
+        slide(event.deltaY > 0 ? 'right' : 'left');
+      };
+      sliderContainer.addEventListener('wheel', handleWheel);
+
+      return () => {
+        sliderContainer.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, [maxScroll]);
+
   const slide = (direction: 'left' | 'right') => {
     const slideAmount = sliderWindowRef.current?.clientWidth ? sliderWindowRef.current.clientWidth * 0.8 : 0;
     setScrollAmount((prevScroll) => {
@@ -56,10 +74,11 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
     });
   };
 
-  const handleWheel = (event: React.WheelEvent) => {
-    event.preventDefault();
-    slide(event.deltaY > 0 ? 'right' : 'left');
-  };
+
+
+
+
+
 
   const handleTouchStart = (event: React.TouchEvent) => {
     const touchStartX = event.touches[0].clientX;
@@ -80,7 +99,13 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
   const getImageUrl = (path: string) => `https://image.tmdb.org/t/p/w300${path}`;
 
   const renderMovieCard = (movie: Movie) => (
-    <div key={movie.id} className="movie-card" onClick={() => toggleWishlist(movie)}>
+    <div
+      key={movie.id}
+      className="movie-card"
+      onMouseEnter={() => setHoveredMovieId(movie.id)} // 호버 상태 설정
+      onMouseLeave={() => setHoveredMovieId(null)} // 호버 상태 해제
+      onClick={() => toggleWishlist(movie)}
+    >
       <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
       <span>{movie.title}</span>
       <div>
@@ -88,6 +113,12 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
         <span><br />평점:⭐{movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}</span>
       </div>
       {isInWishlist(movie.id) && <div className="wishlist-indicator">👍</div>}
+      {/* 영화 설명 표시 */}
+      {hoveredMovieId === movie.id && (
+        <div className="movie-overview">
+          <p>{movie.overview || "No description available."}</p>
+        </div>
+      )}
     </div>
   );
 
@@ -98,7 +129,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
       onMouseLeave={() => setShowButtons(false)}
     >
       <h2>{title}</h2>
-      <div className="slider-container" onWheel={handleWheel} onTouchStart={handleTouchStart}>
+      <div className="slider-container" onTouchStart={handleTouchStart}>
         <button
           className="slider-button left"
           onClick={() => slide('left')}
