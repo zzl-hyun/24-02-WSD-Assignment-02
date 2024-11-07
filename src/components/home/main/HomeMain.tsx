@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import URLService from '../../../util/movie/URL';
-import WishlistService from '../../../util/movie/wishlist';
+// import {useWishlistService} from '../../../util/movie/wishlist';
 import Banner from '../../../views/home-main/Banner';
 import MovieRow from '../../../views/home-main/MovieRow';
 import './HomeMain.css';
@@ -15,7 +15,7 @@ const HomeMain: React.FC = () => {
 
   const apiKey = localStorage.getItem('TMDb-Key') || '';
   const urlService = new URLService();
-  const wishlistService = new WishlistService();
+  // const wishlistService = new WishlistService();
   
   useEffect(() => {
     // API URLs 설정
@@ -52,13 +52,13 @@ const HomeMain: React.FC = () => {
       <Banner movie={featuredMovie} />
 
       {popularMoviesUrl && (
-        <MovieRow title="인기 영화" fetchUrl={popularMoviesUrl} wishlistService={wishlistService} />
+        <MovieRow title="인기 영화" fetchUrl={popularMoviesUrl} />
       )}
       {newReleasesUrl && (
-        <MovieRow title="최신 영화" fetchUrl={newReleasesUrl} wishlistService={wishlistService} />
+        <MovieRow title="최신 영화" fetchUrl={newReleasesUrl}  />
       )}
       {actionMoviesUrl && (
-        <MovieRow title="액션 영화" fetchUrl={actionMoviesUrl} wishlistService={wishlistService} />
+        <MovieRow title="액션 영화" fetchUrl={actionMoviesUrl}  />
       )}
 
       <div className="icons">

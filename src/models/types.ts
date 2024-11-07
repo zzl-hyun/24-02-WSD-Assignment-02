@@ -13,6 +13,7 @@ export interface SearchOptions {
     overview?: string;
     original_language: string;
     vote_average: number;
+    release_date: string;
   }
   
   export interface APIResponse {
