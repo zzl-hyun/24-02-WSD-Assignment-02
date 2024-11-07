@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faTicket, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faTicket, faBars, faTimes, faRightFromBracket} from '@fortawesome/free-solid-svg-icons';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -59,10 +59,10 @@ const Header: React.FC = () => {
           )}
         </div>
         <div className="header-right">
-          <span>welcome!! {user}</span>
+          <span style={{fontFamily:""}}><b>{user}</b></span>
           <button className="icon-button" onClick={removeKey}>
-            <span>로그아웃</span>
-            <FontAwesomeIcon icon={faUser} />
+            {/* <span>logout </span> */}
+            <FontAwesomeIcon icon={faRightFromBracket} />
           </button>
           {/* Show mobile menu button only if on mobile */}
           {true && (
