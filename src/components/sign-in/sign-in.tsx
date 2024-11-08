@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../../util/auth/authService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './sign-in.css';
 
 const SignIn: React.FC = () => {
@@ -42,23 +44,29 @@ const SignIn: React.FC = () => {
         localStorage.removeItem('rememberedPassword');
       }
       localStorage.setItem('currentUser', email);
-      alert('Login successful');
+      // redux 로 관리할 예정
+      // localStorage.setItem('isLoggedIn', 'true');
+      // alert('Login successful');
       navigate('/');
     } catch (error) {
-      alert('Login failed');
+      toast.error('Login failed');
+      // redux로 관리할 예정
+      // localStorage.setItem('isLoggedIn', 'false');
+      // alert('Login failed');
     }
   };
 
   const handleRegister = async () => {
     try {
       await AuthService.tryRegister(registerEmail, registerPassword);
-      alert('Registration successful');
+      toast.success('Registration successful');
+      // alert('Registration successful');
       toggleCard();
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
+    } catch (error: any) {
+      if (error.message === 'User already exists') {
+        toast.error('이미 존재하는 사용자입니다.');
       } else {
-        alert('An unknown error occurred');
+        toast.error('회원가입에 실패하였습니다.');
       }
     }
   };
@@ -69,12 +77,13 @@ const SignIn: React.FC = () => {
     console.log("Toggling card visibility");
     setIsLoginVisible(!isLoginVisible);
   };
-  
 
   return (
     <div>
+      
       <div className="bg-image"></div>
       <div className="container">
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
         <div id="phone">
           <div id="content-wrapper">
             <div className={`card ${!isLoginVisible ? 'hidden' : ''}`} id="login">
