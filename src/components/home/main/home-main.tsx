@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import URLService from '../../../util/movie/URL';
-// import {useWishlistService} from '../../../util/movie/wishlist';
 import Banner from '../../../views/home-main/Banner';
 import MovieRow from '../../../views/home-main/MovieRow';
-import './HomeMain.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { setLoginSuccess } from '../../../redux/slices/authSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './home-main.css';
 
 const HomeMain: React.FC = () => {
   const [featuredMovie, setFeaturedMovie] = useState<any>(null);
@@ -14,9 +18,22 @@ const HomeMain: React.FC = () => {
   const [actionMoviesUrl, setActionMoviesUrl] = useState('');
 
   const apiKey = localStorage.getItem('TMDb-Key') || '';
-  const urlService = new URLService();
+  const urlService = useMemo(() => new URLService(), []);
   // const wishlistService = new WishlistService();
   
+  const dispatch = useDispatch();
+  const loginSuccess = useSelector((state: RootState) => state.auth.loginSuccess);
+  useEffect(() => {
+    console.log("loginSuccess value homemain:", loginSuccess);
+    if (loginSuccess) {
+      toast.success('Login successful');
+      // console.log('Login successful');
+      // alert('Login successful');
+      dispatch(setLoginSuccess(false)); // Reset login success to prevent repeated toasts
+    }
+  }, [loginSuccess, dispatch]);
+
+
   useEffect(() => {
     // API URLs 설정
     setPopularMoviesUrl(urlService.getURL4PopularMovies(apiKey));
@@ -49,6 +66,8 @@ const HomeMain: React.FC = () => {
 
   return (
     <div className="home">
+      <ToastContainer position="top-right" autoClose={1000} hideProgressBar />
+
       <Banner movie={featuredMovie} />
 
       {popularMoviesUrl && (

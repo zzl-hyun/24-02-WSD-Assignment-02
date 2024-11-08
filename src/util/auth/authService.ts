@@ -5,33 +5,38 @@ export default class AuthService {
     return new Promise((resolve, reject) => {
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       const user = users.find((user: any) => user.email === email && user.password === password);
-
+  
       if (user) {
+        console.log("User authenticated:", user); // Debug log
         if (saveToken) {
-          localStorage.setItem('TMDb-Key', password);  // Remember Me가 체크된 경우 localStorage에 저장
+          localStorage.setItem('TMDb-Key', password);
         } else {
-          sessionStorage.setItem('TMDb-Key', password); // 체크되지 않은 경우 sessionStorage에 저장
+          sessionStorage.setItem('TMDb-Key', password);
         }
-        // sessionStorage.setItem('isAuthenticated', 'true'); // 인증 상태 설정
-        localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 설정
+        localStorage.setItem('isAuthenticated', 'true');
         resolve(user);
       } else {
+        console.error("Authentication failed for email:", email); // Debug log
         reject(new Error('Login failed'));
       }
     });
   }
+  
 
+
+  
   static tryRegister(email: string, password: string): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
+        // Fetch the latest users list from localStorage each time
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const userExists = users.some((existingUser: any) => existingUser.email === email);
-
+  
         if (userExists) {
           reject(new Error('User already exists'));
           return;
         }
-
+  
         const newUser = { email, password };
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
@@ -41,9 +46,11 @@ export default class AuthService {
       }
     });
   }
+  
 
   static logout() {
     localStorage.removeItem('TMDb-Key');
-    sessionStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('currentUser');
   }
 }

@@ -4,7 +4,7 @@ class URLService {
   fetchFeaturedMovie = async (apiKey: string): Promise<any | undefined> => {
     try {
       const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR`);
-      console.log(response.data.results[0]);
+      // console.log(response.data.results[0]);
       return response.data.results[0];
     } catch (error) {
       console.error('Error fetching featured movie:', error);
