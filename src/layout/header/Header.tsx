@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faTicket, faBars, faTimes, faRightFromBracket} from '@fortawesome/free-solid-svg-icons';
+import AuthService from '../../util/auth/authService';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -27,8 +28,8 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  const removeKey = () => {
-    localStorage.removeItem('TMDb-Key');
+  const logout = () => {
+    AuthService.logout();
     navigate('/signin');
   };
 
@@ -60,8 +61,8 @@ const Header: React.FC = () => {
         </div>
         <div className="header-right">
           <span style={{fontFamily:""}}><b>{user}</b></span>
-          <button className="icon-button" onClick={removeKey}>
-            {/* <span>logout </span> */}
+          {/* logout */}
+          <button className="icon-button" onClick={logout}>
             <FontAwesomeIcon icon={faRightFromBracket} />
           </button>
           {/* Show mobile menu button only if on mobile */}
