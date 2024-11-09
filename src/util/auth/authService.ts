@@ -8,13 +8,14 @@ export default class AuthService {
       const user = users.find((user: any) => user.email === email && user.password === password);
   
       if (user) {
-        console.log("User authenticated:", user); // Debug log
         if (saveToken) {
           localStorage.setItem('TMDb-Key', password);
         } else {
           sessionStorage.setItem('TMDb-Key', password);
         }
+        console.log("User authenticated:", user); // Debug log
         localStorage.setItem('isAuthenticated', 'true');
+        // sessionStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('currentUser', email);
         resolve(user);
       } else {
@@ -57,6 +58,7 @@ export default class AuthService {
   static logout(): void {
     localStorage.removeItem('TMDb-Key');
     localStorage.removeItem('isAuthenticated');
+    // sessionStorage.removeItem('isAuthenticated');
     localStorage.removeItem('currentUser');
   }
   // static async socialLogin(provider: string, token: string): Promise<any> {
