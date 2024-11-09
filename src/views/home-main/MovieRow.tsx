@@ -19,9 +19,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
   const [hoveredMovieId, setHoveredMovieId] = useState<number | null>(null); // Hover 상태를 추적하는 state
   const { toggleWishlist, isInWishlist } = useWishlistService();
 
-  useEffect(() => {
-    fetchMovies();
-  }, [fetchUrl]);
+  
 
   const fetchMovies = useCallback(async () => {
     try {
@@ -33,6 +31,10 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
     }
   }, [fetchUrl]);
 
+  useEffect(() => {
+    fetchMovies();
+  }, [fetchUrl]);
+  
   const calculateMaxScroll = useCallback(() => {
     if (sliderRef.current && sliderWindowRef.current) {
       setMaxScroll(
