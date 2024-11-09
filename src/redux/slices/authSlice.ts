@@ -29,37 +29,47 @@ const initialState: AuthState = {
   errorMessage: null,
 };
 
+// export const tryLogin = createAsyncThunk(
+//   'auth/tryLogin',
+//   async ({ email, password }: { email: string; password: string }, { dispatch, rejectWithValue }) => {
+//     try {
+//       console.log("Attempting login..."); // Debug log
+//       await AuthService.tryLogin(email, password);
+//       console.log("Login successful, dispatching setLoginSuccess(true)"); // Debug log
+//       dispatch(setLoginSuccess(true)); // Ensure this is executed
+//       return { email };
+//     } catch (error: any) {
+//       console.error("Login failed:", error.message); // Debug log for error
+//       return rejectWithValue(error.message || 'Login failed');
+//     }
+//   }
+// );
+
+
+export const tryLogin = createAsyncThunk(
+  'auth/tryLogin',
+  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+    try {
+      await AuthService.tryLogin(email, password); // AuthService에서 처리
+      return { email };
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Login failed');
+    }
+  }
+);
+
 // Async thunk for registering a user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      await AuthService.tryRegister(email, password);
+      await AuthService.tryRegister(email, password); // AuthService에서 처리
       return { email };
     } catch (error: any) {
       return rejectWithValue(error.message || 'Registration failed');
     }
   }
 );
-
-
-export const tryLogin = createAsyncThunk(
-    'auth/tryLogin',
-    async ({ email, password }: { email: string; password: string }, { dispatch, rejectWithValue }) => {
-      try {
-        console.log("Attempting login..."); // Debug log
-        await AuthService.tryLogin(email, password);
-        console.log("Login successful, dispatching setLoginSuccess(true)"); // Debug log
-        dispatch(setLoginSuccess(true)); // Ensure this is executed
-        return { email };
-      } catch (error: any) {
-        console.error("Login failed:", error.message); // Debug log for error
-        return rejectWithValue(error.message || 'Login failed');
-      }
-    }
-  );
-  
-
 
 const authSlice = createSlice({
   name: 'auth',
@@ -99,14 +109,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
-        state.errorMessage = null;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isAuthenticated = false;
-        state.errorMessage = action.payload as string;
-      })
       .addCase(tryLogin.fulfilled, (state) => {
         state.isAuthenticated = true;
         state.loginSuccess = true;
@@ -115,6 +117,14 @@ const authSlice = createSlice({
       .addCase(tryLogin.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.loginSuccess = false;
+        state.errorMessage = action.payload as string;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.errorMessage = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isAuthenticated = false;
         state.errorMessage = action.payload as string;
       });
   },

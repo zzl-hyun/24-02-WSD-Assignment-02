@@ -14,7 +14,7 @@ import {
   registerUser,
   tryLogin
 } from '../../redux/slices/authSlice';
-import AuthService from '../../util/auth/authService';
+// import AuthService from '../../util/auth/authService'; authSlice로 대체
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './sign-in.css';
@@ -37,12 +37,15 @@ const SignIn: React.FC = () => {
 
   // Remember me: Load stored email and password
   useEffect(() => {
-    const storedEmail = localStorage.getItem('rememberedEmail');
-    const storedPassword = localStorage.getItem('rememberedPassword');
-    if (storedEmail && storedPassword) {
-      dispatch(setEmail(storedEmail));
-      dispatch(setPassword(storedPassword));
+    const storedUser = localStorage.getItem('rememberUser');
+    if(storedUser) {
+      const { email, password } = JSON.parse(storedUser);
+      dispatch(setEmail(email));
+      dispatch(setPassword(password));
       dispatch(setRememberMe(true));
+    }else {
+      dispatch(setEmail(''));
+      dispatch(setPassword(''));    
     }
   }, [dispatch]);
 
@@ -58,11 +61,9 @@ const SignIn: React.FC = () => {
       
       if(tryLogin.fulfilled.match(result)) {
         if (rememberMe) {
-          localStorage.setItem('rememberedEmail', email);
-          localStorage.setItem('rememberedPassword', password);
+          localStorage.setItem('rememberUser', JSON.stringify({ email, password }));
         } else {
-          localStorage.removeItem('rememberedEmail');
-          localStorage.removeItem('rememberedPassword');
+          localStorage.removeItem('rememberUser');
         }
         localStorage.setItem('currentUser', email);
         navigate('/');

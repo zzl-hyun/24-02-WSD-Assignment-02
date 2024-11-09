@@ -21,14 +21,12 @@ const HomeMain: React.FC = () => {
   const urlService = useMemo(() => new URLService(), []);
   // const wishlistService = new WishlistService();
   
+
   const dispatch = useDispatch();
   const loginSuccess = useSelector((state: RootState) => state.auth.loginSuccess);
   useEffect(() => {
-    console.log("loginSuccess value homemain:", loginSuccess);
     if (loginSuccess) {
       toast.success('Login successful');
-      // console.log('Login successful');
-      // alert('Login successful');
       dispatch(setLoginSuccess(false)); // Reset login success to prevent repeated toasts
     }
   }, [loginSuccess, dispatch]);

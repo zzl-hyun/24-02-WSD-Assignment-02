@@ -1,7 +1,8 @@
 // src/util/auth/authService.ts
 
 export default class AuthService {
-  static tryLogin(email: string, password: string, saveToken = true): Promise<any> {
+
+  static async tryLogin(email: string, password: string, saveToken = true): Promise<any> {
     return new Promise((resolve, reject) => {
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       const user = users.find((user: any) => user.email === email && user.password === password);
@@ -22,21 +23,16 @@ export default class AuthService {
     });
   }
   
-
-
-  
-  static tryRegister(email: string, password: string): Promise<void> {
+  static async tryRegister(email: string, password: string): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        // Fetch the latest users list from localStorage each time
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const userExists = users.some((existingUser: any) => existingUser.email === email);
-  
+
         if (userExists) {
           reject(new Error('User already exists'));
           return;
         }
-  
         const newUser = { email, password };
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
@@ -48,9 +44,22 @@ export default class AuthService {
   }
   
 
-  static logout() {
+  static logout(): void {
     localStorage.removeItem('TMDb-Key');
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('currentUser');
   }
+  // static async socialLogin(provider: string, token: string): Promise<any> {
+  //   // 소셜 로그인 API 호출 로직 구현
+  //   return new Promise((resolve, reject) => {
+  //     // 예시 코드 (실제 API 호출 대체)
+  //     if (provider && token) {
+  //       console.log(`Social login with ${provider}`);
+  //       resolve({ email: "socialuser@example.com", token });
+  //     } else {
+  //       reject(new Error('Social login failed'));
+  //     }
+  //   });
+  // }
 }
+
