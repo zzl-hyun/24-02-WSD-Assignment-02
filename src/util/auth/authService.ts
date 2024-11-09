@@ -15,6 +15,7 @@ export default class AuthService {
           sessionStorage.setItem('TMDb-Key', password);
         }
         localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('currentUser', email);
         resolve(user);
       } else {
         console.error("Authentication failed for email:", email); // Debug log
@@ -23,6 +24,14 @@ export default class AuthService {
     });
   }
   
+  static setRememberUser(email: string, password: string, rememberMe: boolean) {
+    if (rememberMe) {
+      localStorage.setItem('rememberUser', JSON.stringify({ email, password }));
+    } else {
+      localStorage.removeItem('rememberUser');
+    }
+  }
+
   static async tryRegister(email: string, password: string): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
@@ -43,6 +52,7 @@ export default class AuthService {
     });
   }
   
+
 
   static logout(): void {
     localStorage.removeItem('TMDb-Key');

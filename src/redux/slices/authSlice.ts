@@ -45,7 +45,6 @@ const initialState: AuthState = {
 //   }
 // );
 
-
 export const tryLogin = createAsyncThunk(
   'auth/tryLogin',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
@@ -55,6 +54,13 @@ export const tryLogin = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Login failed');
     }
+  }
+);
+
+export const setRememberUser = createAsyncThunk(
+  'auth/setRememberMe',
+  async ({ email, password, rememberMe }: { email: string; password: string; rememberMe: boolean }) => {
+    AuthService.setRememberUser(email, password, rememberMe);
   }
 );
 
