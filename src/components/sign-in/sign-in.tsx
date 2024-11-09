@@ -10,6 +10,7 @@ import {
   setRegisterPassword,
   setConfirmPassword,
   setRememberMe,
+  setRememberUser,
   setAcceptTerms,
   registerUser,
   tryLogin
@@ -35,7 +36,7 @@ const SignIn: React.FC = () => {
     acceptTerms,
   } = useSelector((state: RootState) => state.auth);
 
-  // Remember me: Load stored email and password
+  // Load stored email and password
   useEffect(() => {
     const storedUser = localStorage.getItem('rememberUser');
     if(storedUser) {
@@ -55,50 +56,45 @@ const SignIn: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Assuming AuthService still handles async login
-      // await AuthService.tryLogin(email, password);
       const result = await dispatch(tryLogin({ email, password }));
       
       if(tryLogin.fulfilled.match(result)) {
-        if (rememberMe) {
-          localStorage.setItem('rememberUser', JSON.stringify({ email, password }));
-        } else {
-          localStorage.removeItem('rememberUser');
-        }
-        localStorage.setItem('currentUser', email);
+        dispatch(setRememberUser({ email, password, rememberMe }));
         navigate('/');
       }else if(tryLogin.rejected.match(result)) {
-        toast.error('Login failed');
+        toast.error(result.payload as string || 'Login failed');
       }
     } catch (error) {
       toast.error('Login failed');
     }
   };
 
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    // 유효성 검사
     if (!acceptTerms) {
-      toast.warn('Please accept the terms and conditions');
-      return;
+      return toast.warn('Please accept the terms and conditions');
     }
     if (registerPassword !== confirmPassword) {
-      toast.warn('Passwords do not match');
-      return;
+      return toast.error('Passwords do not match');
     }
   
     try {
+      // 회원가입 요청
       const result = await dispatch(registerUser({ email: registerEmail, password: registerPassword }));
+  
       if (registerUser.fulfilled.match(result)) {
         toast.success('Registration successful');
-        toggleCard();
-      } else if (registerUser.rejected.match(result)) {
-        if (result.payload === 'User already exists') {
-          toast.error('이미 존재하는 사용자입니다.');
-        } else {
-          toast.error('회원가입에 실패하였습니다.');
-        }
+        toggleCard(); // 카드 전환
+      } else {
+        const errorMessage = result.payload === 'User already exists' 
+          ? '이미 존재하는 사용자입니다.'
+          : '회원가입에 실패하였습니다.';
+        toast.error(errorMessage);
       }
-    } catch (error) {
+    } catch {
       toast.error('회원가입에 실패하였습니다.');
     }
   };
