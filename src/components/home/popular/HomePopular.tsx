@@ -8,29 +8,49 @@ import URLService from '../../../util/movie/URL';
 import './HomePopular.css';
 
 const HomePopular: React.FC = () => {
-  const [currentView, setCurrentView] = useState('grid');
+  const [currentView, setCurrentView] = useState<'grid' | 'list'>('grid');
   const apiKey = localStorage.getItem('TMDb-Key') || '';
   const urlService = new URLService();
 
-  useEffect(() => {
-    if (currentView === 'grid') {
-      disableScroll();
-    } else {
-      enableScroll();
-    }
+  // useEffect(() => {
+  //   if (currentView === 'grid') {
+  //     disableScroll();
+  //   } else {
+  //     enableScroll();
+  //   }
 
-    // Clean up scroll setting on unmount
-    return () => enableScroll();
-  }, [currentView]);
+  //   // Clean up scroll setting on unmount
+  //   return () => enableScroll();
+  // }, [currentView]);
 
   const disableScroll = () => {
-    document.body.style.overflow = 'hidden';
+    console.log(currentView);
+    // setCurrentView('grid');
+    document.documentElement.style.overflow = 'hidden';
+    console.log('disableScroll');
+    // document.body.classList.add('no-scroll');
   };
 
   const enableScroll = () => {
-    document.body.style.overflow = 'auto';
+    console.log(currentView);
+    // setCurrentView('list');
+    document.documentElement.style.overflow = 'auto';
+    // document.body.classList.remove('no-scroll');
+    // console.log(document.body.style.overflow);
+    console.log('enableScroll');
   };
 
+  useEffect(() => {
+    if (currentView === 'grid') {
+      
+      disableScroll();
+    } else {
+      
+      enableScroll();
+    }
+    return () => enableScroll(); // 컴포넌트 언마운트 시 스크롤 복구
+  }, [currentView]);
+  
   const fetchPopularMoviesUrl = () => {
     return urlService.getURL4PopularMovies(apiKey);
   };
@@ -53,7 +73,9 @@ const HomePopular: React.FC = () => {
       </div>
 
       {currentView === 'grid' ? (
-        <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()} />
+        <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()}  />
+        
+
       ) : (
         // <MovieGrid title="인기 영화" fetchUrl={fetchPopularMoviesUrl()} />
         <MovieInfiniteScroll apiKey={apiKey} genreCode="0" sortingOrder="all" voteEverage={-1} />

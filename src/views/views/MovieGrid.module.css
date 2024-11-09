@@ -101,6 +101,10 @@
   cursor: not-allowed;
 }
 
+.noScroll {
+  overflow: hidden;
+}
+
 @media (max-width: 768px) {
   .movieGrid {
     height: calc(90svh - 200px);

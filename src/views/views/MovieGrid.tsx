@@ -16,9 +16,9 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
   const [moviesPerPage, setMoviesPerPage] = useState(20);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  // const wishlistService = new WishlistService();
-  const { wishlist, toggleWishlist, isInWishlist} = useWishlistService();
-  
+  const { wishlist, toggleWishlist, isInWishlist } = useWishlistService();
+
+ 
 
   const fetchMovies = async () => {
     try {
@@ -37,7 +37,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
       }
 
       setMovies(allMovies.slice(0, totalMoviesNeeded));
-      calculateLayout(); // Adjust layout after setting movies
+      calculateLayout();
     } catch (error) {
       console.error('Error fetching movies:', error);
     }
