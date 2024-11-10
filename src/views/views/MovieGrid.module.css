@@ -107,7 +107,10 @@
 
 @media (max-width: 768px) {
   .movieGrid {
+    width: 100%;
     height: calc(90svh - 200px);
+    margin-bottom: 40px;
+    margin-top: 30px;
   }
 
   .movieCard {

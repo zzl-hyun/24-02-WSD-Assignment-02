@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 
 code {
@@ -24,6 +25,7 @@ code {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
 }
 
 a {
@@ -113,7 +115,7 @@ body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: white;
   overflow-x: hidden;
-  background-color: #2b2b2b !important;
+  background-color: #000000 !important;
   display: block;
 }
 /* 스크롤을 금지하고 스크롤바를 완전히 제거하는 클래스 */
