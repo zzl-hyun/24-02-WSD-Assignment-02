@@ -1,10 +1,11 @@
 // src/components/search/HomeSearch.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MovieSearch from '../../views/search/MovieSearch';
 import MovieInfiniteScroll from '../../views/views/MovieInfiniteScroll';
 import { SearchOptions } from '../../models/types';
 import styles from './HomeSearch.module.css';
+import { setCache, getCache } from '../../util/cache/movieCache';
 
 const HomeSearch: React.FC = () => {
   const apiKey = localStorage.getItem('TMDb-Key') || '';
@@ -47,8 +48,23 @@ const HomeSearch: React.FC = () => {
     setAgeId(newAgeId);
     setSortId(newSortId);
     console.log("Sorting:", sortingCode[options.sorting]);
-};
+  };
 
+  useEffect(() => {
+    const cachedGenreCode = getCache('genreCode');
+    const cachedAgeCode = getCache('ageCode');
+    const cachedSortingCode = getCache('sortingCode');
+
+    if (cachedGenreCode) setGenreId(cachedGenreCode);
+    if (cachedAgeCode) setAgeId(cachedAgeCode);
+    if (cachedSortingCode) setSortId(cachedSortingCode);
+  }, []);
+
+  useEffect(() => {
+    setCache('genreCode', genreId, 3600000); // Cache for 1 hour
+    setCache('ageCode', ageId, 3600000); // Cache for 1 hour
+    setCache('sortingCode', sortId, 3600000); // Cache for 1 hour
+  }, [genreId, ageId, sortId]);
 
   return (
     <div className={styles.containerSearch}>

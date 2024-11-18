@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useWishlistService } from '../../util/movie/wishlist';
 import { Movie, APIResponse } from '../../models/types';
 import styles from './MovieInfiniteScroll.module.css';
+import { setCache, getCache } from '../../util/cache/movieCache';
 
 interface MovieInfiniteScrollProps {
   genreCode: string;
@@ -72,13 +73,32 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
       );
   
       setMovies((prevMovies) => reset ? uniqueNewMovies : [...prevMovies, ...uniqueNewMovies]);
-      setCurrentPage(reset ? 2 : (prevPage) => prevPage + 1);
+      setCurrentPage(reset ? 1 : (prevPage) => prevPage + 1); // 수정된 부분
       if (newMovies.length === 0) setHasMore(false);
+  
+      if (!reset) {
+        const cacheKey = `movies_${genreCode}_${reset ? 1 : currentPage}`;
+        setCache(cacheKey, uniqueNewMovies, 3600000); // Cache for 1 hour
+      }
     } catch (error) {
       console.error('Error fetching movies:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Load all cached movies
+  const loadCachedMovies = () => {
+    let allCachedMovies: Movie[] = [];
+    let page = 1;
+    while (true) {
+      const cacheKey = `movies_${genreCode}_${page}`;
+      const cachedMovies = getCache(cacheKey);
+      if (!cachedMovies) break;
+      allCachedMovies = [...allCachedMovies, ...cachedMovies];
+      page++;
+    }
+    setMovies(allCachedMovies);
   };
 
   // Handle resize
@@ -113,14 +133,18 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
   const scrollToTopAndReset = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMovies([]);
-    // setCurrentPage(1);
     setHasMore(true);
+    setCurrentPage(1); // Reset current page to 1
     fetchMovies(true); // Call fetchMovies with reset
   };
 
   useEffect(() => {
     scrollToTopAndReset();
   }, [genreCode, sortingOrder, voteEverage]);
+
+  useEffect(() => {
+    loadCachedMovies();
+  }, []);
 
   const getImageUrl = (path: string) => (path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg');
 
