@@ -111,36 +111,29 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
   };
 
   // Handle scroll to show/hide "Top" button
-  const handleScroll = () => {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    setShowTopButton(scrollTop > 300);
+
+
+  // Scroll to top and reset movies
+  // Scroll to top and reset movies
+  const scrollToTopAndReset = () => {
+    document.documentElement.scrollTop = 0; // 강제로 스크롤 초기화
+    document.body.scrollTop = 0; // Safari 호환성
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // 부드럽게 스크롤
   };
+  
 
   useEffect(() => {
     setupIntersectionObserver();
     handleResize();
     window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleScroll);
+    // window.addEventListener('scroll', handleScroll);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
+      // window.removeEventListener('scroll', handleScroll);
       if (observer.current) observer.current.disconnect();
     };
   }, [setupIntersectionObserver]);
-
-  // Scroll to top and reset movies
-  const scrollToTopAndReset = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setMovies([]);
-    setHasMore(true);
-    setCurrentPage(1); // Reset current page to 1
-    fetchMovies(true); // Call fetchMovies with reset
-  };
-
-  useEffect(() => {
-    scrollToTopAndReset();
-  }, [genreCode, sortingOrder, voteEverage]);
 
   useEffect(() => {
     loadCachedMovies();
@@ -178,7 +171,7 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
         )}
       </div>
 
-      {showTopButton && (
+      {(
         <button onClick={scrollToTopAndReset} className={styles.topButton} aria-label="맨 위로 이동">
           Top
         </button>
