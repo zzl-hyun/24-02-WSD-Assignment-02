@@ -43,6 +43,107 @@ const SignIn: React.FC = () => {
     acceptTerms,
   } = useSelector((state: RootState) => state.auth);
  
+
+  // Load stored email and password
+  useEffect(() => {
+    const storedUser = localStorage.getItem('rememberUser');
+    if(storedUser) {
+      const { email, password } = JSON.parse(storedUser);
+      dispatch(setEmail(email));
+      dispatch(setPassword(password));
+      dispatch(setRememberMe(true));
+    }else {
+      dispatch(setEmail(''));
+      dispatch(setPassword(''));    
+    }
+  }, [dispatch]);
+
+  const isLoginFormValid = email && password;
+  const isRegisterFormValid = registerEmail && registerPassword && acceptTerms;
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if(!isLoginFormValid){
+      return toast.warn('Please enter email')
+    }
+    
+    try {
+      const result = await dispatch(tryLogin({ email, password }));
+  
+      if (tryLogin.fulfilled.match(result)) {
+        dispatch(setRememberUser({ email, password, rememberMe }));
+        navigate('/');
+      } else if (tryLogin.rejected.match(result)) {
+        toast.error(result.payload as string);
+      }
+    } catch (error) {
+      toast.error('Login failed');
+    }
+  };
+
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    // 유효성 검사
+    if (!acceptTerms) {
+      return toast.warn('Please accept the terms and conditions');
+    }
+    if (!registerEmail.trim()) {
+      return toast.error('Email cannot be empty');
+    }
+    if (!registerPassword.trim()) {
+      return toast.error('Password cannot be empty');
+    }
+    if (registerPassword !== confirmPassword) {
+      return toast.error('Passwords do not match');
+    }
+  
+    try {
+      // 회원가입 요청
+      const result = await dispatch(registerUser({ email: registerEmail, password: registerPassword }));
+  
+      if (registerUser.fulfilled.match(result)) {
+        toast.success('Registration successful');
+        toggleCard(); // 카드 전환
+      } else {
+        const errorMessage = result.payload === 'User already exists' 
+          ? '이미 존재하는 사용자입니다.'
+          : '회원가입에 실패하였습니다.';
+        toast.error(errorMessage);
+      }
+    } catch {
+      toast.error('회원가입에 실패하였습니다.');
+    }
+  };
+  
+
+  const toggleCard = () => {
+    setIsLoginVisible(!isLoginVisible);
+  };
+
+  const logoVariants = {
+    start: {
+      pathLength: 0,
+      fill: "rgba(229, 16, 19, 0)",
+    },
+    end: {
+      pathLength: 1,
+      fill: "rgba(229, 16, 19, 1)",
+      transition: {
+        default: { duration: 5, ease: "easeInOut" },
+        fill: { duration: 3, ease: [1, 0, 0.8, 1] },
+      },
+    },
+    hover: {
+      scale: 0.9,
+      transition: {
+        yoyo: Infinity,
+      },
+    },
+  };
+  
   useEffect(() => {
     const sequence = async () => {
       // 중앙 로고 나타남
@@ -77,94 +178,6 @@ const SignIn: React.FC = () => {
     sequence();
   }, [logoControls, boxControls]);
   
-  // Load stored email and password
-  useEffect(() => {
-    const storedUser = localStorage.getItem('rememberUser');
-    if(storedUser) {
-      const { email, password } = JSON.parse(storedUser);
-      dispatch(setEmail(email));
-      dispatch(setPassword(password));
-      dispatch(setRememberMe(true));
-    }else {
-      dispatch(setEmail(''));
-      dispatch(setPassword(''));    
-    }
-  }, [dispatch]);
-
-  const isLoginFormValid = email && password;
-  // const isRegisterFormValid = registerEmail && registerPassword && confirmPassword === registerPassword && acceptTerms;
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const result = await dispatch(tryLogin({ email, password }));
-      
-      if(tryLogin.fulfilled.match(result)) {
-        dispatch(setRememberUser({ email, password, rememberMe }));
-        navigate('/');
-      }else if(tryLogin.rejected.match(result)) {
-        toast.error(result.payload as string || 'Login failed');
-      }
-    } catch (error) {
-      toast.error('Login failed');
-    }
-  };
-
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    // 유효성 검사
-    if (!acceptTerms) {
-      return toast.warn('Please accept the terms and conditions');
-    }
-    if (registerPassword !== confirmPassword) {
-      return toast.error('Passwords do not match');
-    }
-  
-    try {
-      // 회원가입 요청
-      const result = await dispatch(registerUser({ email: registerEmail, password: registerPassword }));
-  
-      if (registerUser.fulfilled.match(result)) {
-        toast.success('Registration successful');
-        toggleCard(); // 카드 전환
-      } else {
-        const errorMessage = result.payload === 'User already exists' 
-          ? '이미 존재하는 사용자입니다.'
-          : '회원가입에 실패하였습니다.';
-        toast.error(errorMessage);
-      }
-    } catch {
-      toast.error('회원가입에 실패하였습니다.');
-    }
-  };
-  
-
-  const toggleCard = () => {
-    setIsLoginVisible(!isLoginVisible);
-  };
-  const logoVariants = {
-    start: {
-      pathLength: 0,
-      fill: "rgba(229, 16, 19, 0)",
-    },
-    end: {
-      pathLength: 1,
-      fill: "rgba(229, 16, 19, 1)",
-      transition: {
-        default: { duration: 5, ease: "easeInOut" },
-        fill: { duration: 3, ease: [1, 0, 0.8, 1] },
-      },
-    },
-    hover: {
-      scale: 0.9,
-      transition: {
-        yoyo: Infinity,
-      },
-    },
-  };
-
   return (
     <div>
       <div className="bg-image"></div>
@@ -302,7 +315,7 @@ const SignIn: React.FC = () => {
                   />
                   <label className="read-text" htmlFor="terms">I have read <b>Terms and Conditions</b></label>
                 </span>
-                <button className="signin-button" >
+                <button className="signin-button" disabled={!isRegisterFormValid}>
                   Register
                 </button>
               </form>
