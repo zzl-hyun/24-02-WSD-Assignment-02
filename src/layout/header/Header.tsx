@@ -16,7 +16,27 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
-
+  
+  const logoVariants = {
+    start: {
+      pathLength: 0,
+      fill: "rgba(229, 16, 19, 0)",
+    },
+    end: {
+      pathLength: 1,
+      fill: "rgba(229, 16, 19, 1)",
+      transition: {
+        default: { duration: 5, ease: "easeInOut" },
+        fill: { duration: 3, ease: [1, 0, 0.8, 1] },
+      },
+    },
+    hover: {
+      scale: 0.9,
+      transition: {
+        yoyo: Infinity,
+      },
+    },
+  };
     // // Detect if the device is mobile based on the User-Agent
     // useEffect(() => {
     //   const userAgent = navigator.userAgent || navigator.vendor;
@@ -121,23 +141,3 @@ const Header: React.FC = () => {
 
 export default Header;
 
-const logoVariants = {
-  start: {
-    pathLength: 0,
-    fill: "rgba(229, 16, 19, 0)",
-  },
-  end: {
-    pathLength: 1,
-    fill: "rgba(229, 16, 19, 1)",
-    transition: {
-      default: { duration: 5, ease: "easeInOut" },
-      fill: { duration: 3, ease: [1, 0, 0.8, 1] },
-    },
-  },
-  hover: {
-    scale: 0.9,
-    transition: {
-      yoyo: Infinity,
-    },
-  },
-};

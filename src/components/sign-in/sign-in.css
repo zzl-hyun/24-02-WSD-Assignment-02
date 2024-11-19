@@ -66,8 +66,7 @@
     flex-direction: column;
     justify-content: flex-start;
   }
-  
-  
+
   @media (max-height: 600px) {
     #phone {
       transform: translate(-50%, -50%) scale(0.5); /* Scale down on small screens */
@@ -358,6 +357,8 @@
   .active > label {
     color: rgba(0, 0, 0, 0);
   }
+
+
   
   @keyframes register-swap {
     0% {transform: translate(0%, 0%)}
