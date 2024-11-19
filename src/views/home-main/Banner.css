@@ -1,12 +1,11 @@
 .banner {
   height: 60vh;
-  max-width: 95svw;
   background-size: cover;
   background-position: center;
   color: white;
   display: flex;
   align-items: flex-end;
-  margin-top: 50px;
+
 
 }
 
