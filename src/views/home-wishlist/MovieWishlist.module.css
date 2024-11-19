@@ -54,6 +54,9 @@
   
   .movieCard img {
     width: 100%;
+    /* height: auto; */
+    aspect-ratio: 1/1.618;
+    /* aspect-ratio: 1/1; */
     border-radius: 4px;
     object-fit: cover;
   }

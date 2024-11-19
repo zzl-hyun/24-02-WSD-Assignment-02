@@ -1,17 +1,18 @@
 .banner {
   height: 60vh;
-  max-width: 95svw;
   background-size: cover;
   background-position: center;
   color: white;
   display: flex;
   align-items: flex-end;
-  margin-top: 50px;
+
+
 }
 
 .banner-content {
   padding: 50px;
-  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  /* background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%); */
+  background-image:  linear-gradient(rgba(0,0,0,0),rgba(0,0,0,1)) ;
   width: 100%;
   box-sizing: border-box;
   display: flex;

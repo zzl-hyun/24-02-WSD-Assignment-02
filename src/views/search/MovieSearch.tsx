@@ -23,10 +23,18 @@ const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
 
   const [selectedOptions, setSelectedOptions] = useState<SearchOptions>({ ...DEFAULT_OPTIONS });
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
 
   const toggleDropdown = (key: string) => {
     setActiveDropdown(activeDropdown === key ? null : key);
   };
+
+  // const handleSearch = async (query: string) => {
+  //   const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=ko-KR`;
+  //   const response = await fetch(url);
+  //   const data = await response.json();
+  //   setSearchResults(data.results);
+  // };
 
   const selectOption = (key: string, option: string) => {
     const updatedOptions = { ...selectedOptions, [key]: option };

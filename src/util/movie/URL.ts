@@ -4,7 +4,7 @@ class URLService {
   fetchFeaturedMovie = async (apiKey: string): Promise<any | undefined> => {
     try {
       const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR`);
-      console.log(response.data.results[0]);
+      // console.log(response.data.results[0]);
       return response.data.results[0];
     } catch (error) {
       console.error('Error fetching featured movie:', error);
@@ -22,6 +22,9 @@ class URLService {
 
   getURL4GenreMovies = (apiKey: string, genre: string, page: number = 1): string => {
     return `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=${genre}&language=ko-KR&page=${page}`;
+  };
+  getURL4SearchMovies = (apiKey: string, query: string): string => {
+    return `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=ko-KR`;
   };
 }
 

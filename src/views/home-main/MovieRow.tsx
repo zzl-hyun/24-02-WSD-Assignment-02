@@ -1,80 +1,93 @@
-// src/views/home-main/MovieRow.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Movie, APIResponse } from '../../models/types';
+import { useWishlistService } from '../../util/movie/wishlist';
 import axios from 'axios';
 import './MovieRow.css';
 
 interface MovieRowProps {
   title: string;
   fetchUrl: string;
-  wishlistService: any;
 }
 
-const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl, wishlistService }) => {
-  const [movies, setMovies] = useState<any[]>([]);
+const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [scrollAmount, setScrollAmount] = useState(0);
   const [showButtons, setShowButtons] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
   const sliderWindowRef = useRef<HTMLDivElement>(null);
   const [maxScroll, setMaxScroll] = useState(0);
+  const [hoveredMovieId, setHoveredMovieId] = useState<number | null>(null); // Hover 상태를 추적하는 state
+  const { toggleWishlist, isInWishlist } = useWishlistService();
+
+  
+
+  const fetchMovies = useCallback(async () => {
+    try {
+      const response = await axios.get<APIResponse>(fetchUrl);
+      setMovies(response.data.results || []);
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+      setMovies([]);
+    }
+  }, [fetchUrl]);
 
   useEffect(() => {
     fetchMovies();
-    const handleResize = () => calculateMaxScroll();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    calculateMaxScroll();
-  }, [movies]);
-
-  const fetchMovies = async () => {
-    try {
-      const response = await axios.get(fetchUrl);
-      setMovies(response.data.results || []); // Set movies to an empty array if results are undefined
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-      setMovies([]); // Set to empty array if there’s an error
-    }
-  };
-
-  const calculateMaxScroll = () => {
+  }, [fetchUrl]);
+  
+  const calculateMaxScroll = useCallback(() => {
     if (sliderRef.current && sliderWindowRef.current) {
       setMaxScroll(
         Math.max(0, sliderRef.current.scrollWidth - sliderWindowRef.current.clientWidth)
       );
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    calculateMaxScroll();
+    const handleResize = () => calculateMaxScroll();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [movies, calculateMaxScroll]);
+
+
+
+  useEffect(() => {
+    const sliderContainer = sliderWindowRef.current;
+    if (sliderContainer) {
+      const handleWheel = (event: WheelEvent) => {
+        event.preventDefault(); // 기본 브라우저 스크롤 방지
+        slide(event.deltaY > 0 ? 'right' : 'left');
+      };
+      sliderContainer.addEventListener('wheel', handleWheel);
+
+      return () => {
+        sliderContainer.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, [maxScroll]);
 
   const slide = (direction: 'left' | 'right') => {
     const slideAmount = sliderWindowRef.current?.clientWidth ? sliderWindowRef.current.clientWidth * 0.8 : 0;
-    setScrollAmount(prevScroll => {
-      if (direction === 'left') {
-        return Math.max(0, prevScroll - slideAmount);
-      } else {
-        return Math.min(maxScroll, prevScroll + slideAmount);
-      }
+    setScrollAmount((prevScroll) => {
+      return direction === 'left' ? Math.max(0, prevScroll - slideAmount) : Math.min(maxScroll, prevScroll + slideAmount);
     });
   };
 
-  const handleMouseMove = () => setShowButtons(true);
-  const handleMouseLeave = () => setShowButtons(false);
 
-  const handleWheel = (event: React.WheelEvent) => {
-    event.preventDefault();
-    slide(event.deltaY > 0 ? 'right' : 'left');
-  };
+
+
+
+
 
   const handleTouchStart = (event: React.TouchEvent) => {
     const touchStartX = event.touches[0].clientX;
     const handleTouchMove = (moveEvent: TouchEvent) => {
-        const touchEndX = moveEvent.touches[0].clientX;
-        const direction = touchStartX - touchEndX > 0 ? 'right' : 'left';
-        slide(direction);
-      };
+      const touchEndX = moveEvent.touches[0].clientX;
+      slide(touchStartX - touchEndX > 0 ? 'right' : 'left');
+    };
 
     const handleTouchEnd = () => {
       document.removeEventListener('touchmove', handleTouchMove);
@@ -87,10 +100,38 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl, wishlistService })
 
   const getImageUrl = (path: string) => `https://image.tmdb.org/t/p/w300${path}`;
 
+  const renderMovieCard = (movie: Movie) => (
+    <div
+      key={movie.id}
+      className="movie-card"
+      onMouseEnter={() => setHoveredMovieId(movie.id)} // 호버 상태 설정
+      onMouseLeave={() => setHoveredMovieId(null)} // 호버 상태 해제
+      onClick={() => toggleWishlist(movie)}
+    >
+      <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
+      <span>{movie.title}</span>
+      <div>
+        <span>개봉일: {movie.release_date}</span>
+        <span><br />평점:⭐{movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}</span>
+      </div>
+      {isInWishlist(movie.id) && <div className="wishlist-indicator">👍</div>}
+      {/* 영화 설명 표시 */}
+      {hoveredMovieId === movie.id && (
+        <div className="movie-overview">
+          <p>{movie.overview || "No description available."}</p>
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <div className="movie-row" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+    <div
+      className="movie-row"
+      onMouseEnter={() => setShowButtons(true)}
+      onMouseLeave={() => setShowButtons(false)}
+    >
       <h2>{title}</h2>
-      <div className="slider-container" onWheel={handleWheel} onTouchStart={handleTouchStart}>
+      <div className="slider-container" onTouchStart={handleTouchStart}>
         <button
           className="slider-button left"
           onClick={() => slide('left')}
@@ -105,16 +146,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl, wishlistService })
             ref={sliderRef}
             style={{ transform: `translateX(-${scrollAmount}px)` }}
           >
-            {movies.map(movie => (
-              <div
-                key={movie.id}
-                className="movie-card"
-                onClick={() => wishlistService.toggleWishlist(movie)}
-              >
-                <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
-                {wishlistService.isInWishlist(movie.id) && <div className="wishlist-indicator">👍</div>}
-              </div>
-            ))}
+            {movies.map(renderMovieCard)}
           </div>
         </div>
         <button
