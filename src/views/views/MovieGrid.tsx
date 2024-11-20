@@ -129,7 +129,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
                 />
                 <div className={styles.movieTitle}>{movie.title}</div>
                 {isInWishlist(movie.id) && (
-                  <div className={styles.wishlistIndicator}>👍</div>
+                  <div className={styles.wishlistIndicator}>❤️</div>
                 )}
               </div>
             ))}
