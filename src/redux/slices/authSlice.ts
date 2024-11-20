@@ -52,7 +52,7 @@ export const tryLogin = createAsyncThunk(
       await AuthService.tryLogin(email, password); // AuthService에서 처리
       return { email };
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Login failed');
+      return rejectWithValue(error.message || 'password missmatch');
     }
   }
 );
