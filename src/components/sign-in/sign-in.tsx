@@ -203,8 +203,8 @@ const SignIn: React.FC = () => {
             >
               <motion.path
                 variants={logoVariants}
-                initial="start" // 로고 초기 상태를 명확히 설정
-                animate={logoControls} // logoControls를 통해 순차적으로 제어
+                initial="start"
+                animate="end"
                 style={{
                   stroke: "#e51013",
                   strokeWidth: "5px",
