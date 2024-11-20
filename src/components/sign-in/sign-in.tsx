@@ -168,7 +168,7 @@ const SignIn: React.FC = () => {
   // }, [logoControls, boxControls]);
 
   return (
-    <div>
+    <div className='sign-in-page'>
       <div className="bg-image"></div>
       <div className="container">
         <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
@@ -261,7 +261,8 @@ const SignIn: React.FC = () => {
                   <button className="signin-button" disabled={!isLoginFormValid}>Login</button>
                 </form>
                 <a href="javascript:void(0)" className="account-check" onClick={toggleCard}>
-                  Already have an account? <b>Sign in</b>
+                  
+                  <span id='signup' >Already have an account? <b>Sign in</b></span>
                 </a>
               </div>
               {/* register form */}
@@ -309,7 +310,12 @@ const SignIn: React.FC = () => {
                   </button>
                 </form>
                 <a href="javascript:void(0)" id="gotologin" className="account-check" onClick={toggleCard}>
-                  Don't have an account? <b>Sign up</b>
+                  <span id='signup' >Don't have an account? <b>Sign up</b></span>
+                  <ul className='navLinks'>
+                    <li><a href="/terms">Terms of Service</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                  </ul>
                 </a>
               </div>
             </div>

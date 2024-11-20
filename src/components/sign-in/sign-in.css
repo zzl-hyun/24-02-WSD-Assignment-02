@@ -312,10 +312,13 @@
     padding:10px;
     transition: all 0.2s ease;
   }
-  .account-check:hover{
+  /* .account-check:hover{
     color: rgb(339,16,19);
+  } */
+  #signup:hover{
+    color: rgb(339,16,19);
+    transition: all 0.2s ease;
   }
-  
   .account-check:active {
     color:#000;
     transform: translateY(2px);
@@ -368,7 +371,29 @@
   .active > label {
     color: rgba(0, 0, 0, 0);
   }
+
+  .navLinks {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
   
+  .navLinks li {
+    display: inline;
+  }
+  
+  .navLinks a {
+    color: #e5e5e5;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .navLinks a:hover {
+    color: #b3b3b3;
+  }
   
   @keyframes register-swap {
     0% {transform: translate(0%, 0%)}

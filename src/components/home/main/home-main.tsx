@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { setLoginSuccess } from '../../../redux/slices/authSlice';
 import { ToastContainer, toast } from 'react-toastify';
+import Footer from '../../../layout/footer/Footer'
 import 'react-toastify/dist/ReactToastify.css';
 import './home-main.css';
 
@@ -77,12 +78,9 @@ const HomeMain: React.FC = () => {
       {actionMoviesUrl && (
         <MovieRow title="액션 영화" fetchUrl={actionMoviesUrl}  />
       )}
-
-      <div className="icons">
-        <FontAwesomeIcon icon={faSearch} />
-        <FontAwesomeIcon icon={faUser} />
-      </div>
+      <Footer/>
     </div>
+    
   );
 };
 
