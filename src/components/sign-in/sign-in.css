@@ -312,9 +312,6 @@
     padding:10px;
     transition: all 0.2s ease;
   }
-  .account-check:hover{
-    color: rgb(339,16,19);
-  }
   
   .account-check:active {
     color:#000;
@@ -368,7 +365,8 @@
   .active > label {
     color: rgba(0, 0, 0, 0);
   }
-  
+
+
   
   @keyframes register-swap {
     0% {transform: translate(0%, 0%)}

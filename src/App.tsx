@@ -16,7 +16,6 @@ const App: React.FC = () => {
   return (
     // <Router basename={process.env.PUBLIC_URL}>
     <Router> 
-    
       <Routes>
         {/* Main Home Route */}
         <Route
