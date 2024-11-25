@@ -11,6 +11,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import Footer from '../../../layout/footer/Footer'
 import 'react-toastify/dist/ReactToastify.css';
 import './home-main.css';
+import { useTranslation } from 'react-i18next';
+
 
 const HomeMain: React.FC = () => {
   const [featuredMovie, setFeaturedMovie] = useState<any>(null);
@@ -22,7 +24,8 @@ const HomeMain: React.FC = () => {
   const apiKey = localStorage.getItem('TMDb-Key') || '';
   const urlService = useMemo(() => new URLService(), []);
   // const wishlistService = new WishlistService();
-  
+  const { t, i18n } = useTranslation();
+
 
   const dispatch = useDispatch();
   const loginSuccess = useSelector((state: RootState) => state.auth.loginSuccess);
@@ -73,7 +76,7 @@ const HomeMain: React.FC = () => {
       <Banner movie={featuredMovie} />
 
       {popularMoviesUrl && (
-        <MovieRow title="인기" fetchUrl={popularMoviesUrl} />
+        <MovieRow title= {t('popularMovie')} fetchUrl={popularMoviesUrl} />
       )}
       {newReleasesUrl && (
         <MovieRow title="최신" fetchUrl={newReleasesUrl}  />
