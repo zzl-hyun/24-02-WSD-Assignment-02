@@ -114,7 +114,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
         <span>개봉일: {movie.release_date}</span>
         <span><br />평점:⭐{movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}</span>
       </div>
-      {isInWishlist(movie.id) && <div className="wishlist-indicator">👍</div>}
+      {isInWishlist(movie.id) && <div className="wishlist-indicator">⭐</div>}
       {/* 영화 설명 표시 */}
       {hoveredMovieId === movie.id && (
         <div className="movie-overview">

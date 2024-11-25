@@ -11,13 +11,14 @@ class URLService {
       return undefined;
     }
   };
-
+  getURL4ReleaseMovies = (apiKey: string, page: number = 2): string => {
+    return `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=ko-KR&page=${page}`;
+  };
   getURL4PopularMovies = (apiKey: string, page: number = 1): string => {
     return `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR&page=${page}`;
   };
-
-  getURL4ReleaseMovies = (apiKey: string, page: number = 2): string => {
-    return `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=ko-KR&page=${page}`;
+  getURL4TopRatedMovies = (apiKey: string, page: number = 2): string => {
+    return `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=ko-KR&page=${page}`;
   };
 
   getURL4GenreMovies = (apiKey: string, genre: string, page: number = 1): string => {

@@ -17,6 +17,7 @@ const HomeMain: React.FC = () => {
   const [popularMoviesUrl, setPopularMoviesUrl] = useState('');
   const [newReleasesUrl, setNewReleasesUrl] = useState('');
   const [actionMoviesUrl, setActionMoviesUrl] = useState('');
+  const [topRatedMovieUrl, setTopRatedUrl] = useState('');
 
   const apiKey = localStorage.getItem('TMDb-Key') || '';
   const urlService = useMemo(() => new URLService(), []);
@@ -37,6 +38,7 @@ const HomeMain: React.FC = () => {
     // API URLs 설정
     setPopularMoviesUrl(urlService.getURL4PopularMovies(apiKey));
     setNewReleasesUrl(urlService.getURL4ReleaseMovies(apiKey));
+    setTopRatedUrl(urlService.getURL4TopRatedMovies(apiKey));
     setActionMoviesUrl(urlService.getURL4GenreMovies(apiKey, '28'));
     // setFeaturedMovie(urlService.fetchFeaturedMovie(apiKey));
 
@@ -71,13 +73,16 @@ const HomeMain: React.FC = () => {
       <Banner movie={featuredMovie} />
 
       {popularMoviesUrl && (
-        <MovieRow title="인기 영화" fetchUrl={popularMoviesUrl} />
+        <MovieRow title="인기" fetchUrl={popularMoviesUrl} />
       )}
       {newReleasesUrl && (
-        <MovieRow title="최신 영화" fetchUrl={newReleasesUrl}  />
+        <MovieRow title="최신" fetchUrl={newReleasesUrl}  />
+      )}
+      {topRatedMovieUrl && (
+        <MovieRow title="최고 평점" fetchUrl={topRatedMovieUrl}  />
       )}
       {actionMoviesUrl && (
-        <MovieRow title="액션 영화" fetchUrl={actionMoviesUrl}  />
+        <MovieRow title="액션" fetchUrl={actionMoviesUrl}  />
       )}
       <Footer/>
     </div>
