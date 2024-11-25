@@ -11,17 +11,21 @@ import { ToastContainer, toast } from 'react-toastify';
 import Footer from '../../../layout/footer/Footer'
 import 'react-toastify/dist/ReactToastify.css';
 import './home-main.css';
+import { useTranslation } from 'react-i18next';
+
 
 const HomeMain: React.FC = () => {
   const [featuredMovie, setFeaturedMovie] = useState<any>(null);
   const [popularMoviesUrl, setPopularMoviesUrl] = useState('');
   const [newReleasesUrl, setNewReleasesUrl] = useState('');
   const [actionMoviesUrl, setActionMoviesUrl] = useState('');
+  const [topRatedMovieUrl, setTopRatedUrl] = useState('');
 
   const apiKey = localStorage.getItem('TMDb-Key') || '';
   const urlService = useMemo(() => new URLService(), []);
   // const wishlistService = new WishlistService();
-  
+  const { t, i18n } = useTranslation();
+
 
   const dispatch = useDispatch();
   const loginSuccess = useSelector((state: RootState) => state.auth.loginSuccess);
@@ -37,7 +41,9 @@ const HomeMain: React.FC = () => {
     // API URLs 설정
     setPopularMoviesUrl(urlService.getURL4PopularMovies(apiKey));
     setNewReleasesUrl(urlService.getURL4ReleaseMovies(apiKey));
+    setTopRatedUrl(urlService.getURL4TopRatedMovies(apiKey));
     setActionMoviesUrl(urlService.getURL4GenreMovies(apiKey, '28'));
+    // setFeaturedMovie(urlService.fetchFeaturedMovie(apiKey));
 
     // 주요 영화 데이터 로드
     const loadFeaturedMovie = async () => {
@@ -70,13 +76,16 @@ const HomeMain: React.FC = () => {
       <Banner movie={featuredMovie} />
 
       {popularMoviesUrl && (
-        <MovieRow title="인기 영화" fetchUrl={popularMoviesUrl} />
+        <MovieRow title= {t('popularMovie')} fetchUrl={popularMoviesUrl} />
       )}
       {newReleasesUrl && (
-        <MovieRow title="최신 영화" fetchUrl={newReleasesUrl}  />
+        <MovieRow title="최신" fetchUrl={newReleasesUrl}  />
+      )}
+      {topRatedMovieUrl && (
+        <MovieRow title="최고 평점" fetchUrl={topRatedMovieUrl}  />
       )}
       {actionMoviesUrl && (
-        <MovieRow title="액션 영화" fetchUrl={actionMoviesUrl}  />
+        <MovieRow title="액션" fetchUrl={actionMoviesUrl}  />
       )}
       <Footer/>
     </div>
