@@ -29,6 +29,9 @@ const HomeMain: React.FC = () => {
 
   const dispatch = useDispatch();
   const loginSuccess = useSelector((state: RootState) => state.auth.loginSuccess);
+  const { t, i18n } = useTranslation();
+
+  
   useEffect(() => {
     if (loginSuccess) {
       toast.success('Login successful');

@@ -34,6 +34,7 @@ class URLService {
     const language = this.getLanguage();
     return `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=${genre}&language=${language}&page=${page}`;
   };
+
   getURL4SearchMovies = (apiKey: string, query: string): string => {
     const language = this.getLanguage();
     return `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=${language}`;
