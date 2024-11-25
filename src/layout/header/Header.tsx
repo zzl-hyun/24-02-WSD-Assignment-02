@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faTicket, faBars, faTimes, faRightFromBracket} from '@fortawesome/free-solid-svg-icons';
+import { faUser, faTicket, faBars, faTimes, faRightFromBracket, faGlobe} from '@fortawesome/free-solid-svg-icons';
 import AuthService from '../../util/auth/authService';
 import {
   motion,
@@ -10,6 +10,8 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import './Header.css';
+import i18n from '../../locales/i18n';
+import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -37,11 +39,10 @@ const Header: React.FC = () => {
       },
     },
   };
-    // // Detect if the device is mobile based on the User-Agent
-    // useEffect(() => {
-    //   const userAgent = navigator.userAgent || navigator.vendor;
-    //   setIsMobile(/Mobi|Android/i.test(userAgent));
-    // }, []);
+  const handleChangeLang= () => {
+    i18n.language === 'en' ? i18n.changeLanguage('ko') : i18n.changeLanguage('en');
+    
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,12 +105,21 @@ const Header: React.FC = () => {
             </nav>
           )}
         </div>
+
         <div className="header-right">
-          <span style={{fontFamily:""}}><b>{user}</b></span>
+          {/* user */}
+          <span><b>{user}</b></span>
+          
+          {/* lang */}
+          <button     onClick={handleChangeLang}>
+          <span>{i18n.language === 'ko'? 'ko':'en'}</span>
+          </button>
+          
           {/* logout */}
           <button className="icon-button" onClick={logout}>
           <FontAwesomeIcon icon={faRightFromBracket} />
           </button>
+          
           {/* Show mobile menu button only if on mobile */}
           {true && (
             <button className="icon-button mobile-menu-button" onClick={toggleMobileMenu}>

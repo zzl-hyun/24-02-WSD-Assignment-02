@@ -16,7 +16,7 @@ const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
   };
 
   const dropdowns = {
-    originalLanguage: ['장르 (전체)', 'Action', 'Adventure', 'Comedy', 'Crime', 'Family'],
+    originalLanguage: ['장르 (전체)', 'Action', 'Adventure', 'Comedy', 'Crime', 'Family', 'Animation', 'Documentary', 'Drama', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction', 'TV Movie', 'Thriller', 'War', 'Western'],
     translationLanguage: ['평점 (전체)', '9~10', '8~9', '7~8', '6~7', '5~6', '4~5', '4점 이하'],
     sorting: ['언어 (전체)', '영어', '한국어'],
   };
