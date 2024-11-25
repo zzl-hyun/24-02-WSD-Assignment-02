@@ -38,6 +38,7 @@ const HomeMain: React.FC = () => {
     setPopularMoviesUrl(urlService.getURL4PopularMovies(apiKey));
     setNewReleasesUrl(urlService.getURL4ReleaseMovies(apiKey));
     setActionMoviesUrl(urlService.getURL4GenreMovies(apiKey, '28'));
+    // setFeaturedMovie(urlService.fetchFeaturedMovie(apiKey));
 
     // 주요 영화 데이터 로드
     const loadFeaturedMovie = async () => {

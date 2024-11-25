@@ -366,7 +366,9 @@
     color: rgba(0, 0, 0, 0);
   }
 
-
+.navLinks ul, li{
+  list-style: none;
+}
   
   @keyframes register-swap {
     0% {transform: translate(0%, 0%)}

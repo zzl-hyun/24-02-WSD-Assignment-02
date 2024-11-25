@@ -26,6 +26,18 @@ class URLService {
   getURL4SearchMovies = (apiKey: string, query: string): string => {
     return `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=ko-KR`;
   };
+  getVideos = async (apiKey: string, movieId: number): Promise<any[]> => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=ko-KR`
+      );
+      return response.data.results;
+    } catch (error) {
+      console.error('Error fetching videos:', error);
+      return [];
+    }
+  };
+  
 }
 
 export default URLService;

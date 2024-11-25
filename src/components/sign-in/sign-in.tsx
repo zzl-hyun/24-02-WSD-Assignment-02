@@ -311,11 +311,7 @@ const SignIn: React.FC = () => {
                 </form>
                 <a href="javascript:void(0)" id="gotologin" className="account-check" onClick={toggleCard}>
                   <span id='signup' >Don't have an account? <b>Sign up</b></span>
-                  <ul className='navLinks'>
-                    <li><a href="/terms">Terms of Service</a></li>
-                    <li><a href="/privacy">Privacy Policy</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
-                  </ul>
+     
                 </a>
               </div>
             </div>
