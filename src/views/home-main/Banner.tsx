@@ -2,6 +2,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactPlayer from 'react-player';
 import URLService from '../../util/movie/URL';
+import { setCache, getCache } from '../../util/cache/movieCache'; // 캐시 유틸리티 추가
+import i18n from '../../locales/i18n';
 import './Banner.css';
 
 interface BannerProps {
@@ -25,13 +27,25 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
   useEffect(() => {
     const fetchTeaser = async () => {
       if (movie) {
+        const cacheKey = `teaserKey_${i18n.language}_${movie.id}`; // movie.id를 기반으로 캐시 키 생성
+        const cachedTeaserKey = getCache(cacheKey);
+
+        if (cachedTeaserKey) {
+          // 캐시된 데이터가 있으면 바로 사용
+          console.log(`Using cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
+          setTeaserKey(cachedTeaserKey);
+          return;
+        }
+
         try {
           const videos = await urlService.getVideos(localStorage.getItem('TMDb-Key') || '', movie.id);
           // console.log('Fetched Videos:', videos); // 모든 비디오 출력
           const teaser = videos.find((video: any) => video.type === 'Trailer' && video.site.toLowerCase() === 'youtube');
           if (teaser) {
-            console.log('Teaser Found:', teaser, teaser.key); // 선택된 Teaser 출력
             setTeaserKey(teaser.key);
+            setCache(cacheKey, teaser.key, 3600000); // 1시간 캐시 유지
+            console.log(`Set cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
+
           }
         } catch (error) {
           console.error('Error fetching teaser video:', error);
@@ -55,23 +69,11 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
     if (timeLeft === 0) {
       setShowImage(false);
       setIsPlaying(true);
-      const volumeSlider = document.querySelector('.ytp-volume-area');
-      // 현재 볼륨 값 변경
-      if (volumeSlider) {
-        const volumePanel = volumeSlider.closest('.ytp-volume-panel'); // 패널 전체 가져오기
-    
-        // aria-valuenow를 업데이트
-        if (volumePanel) {
-          volumePanel.setAttribute('aria-valuenow', '50'); // 볼륨 50으로 설정
-          volumePanel.setAttribute('aria-valuetext', '50% 볼륨');
-        }
-      }
     }
   }, [teaserKey, timeLeft]);
 
 
   if (!movie) return null;
-
   const backdropUrl = `https://image.tmdb.org/t/p/original${movie.backdrop_path}`;
 
 
@@ -102,7 +104,7 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
           ref={playerRef}
           url={`https://www.youtube.com/watch?v=${teaserKey}`}
           playing={isPlaying}
-          controls
+          // controls
           volume={1}
           muted={true} // 소리 활성화
           className="react-player"

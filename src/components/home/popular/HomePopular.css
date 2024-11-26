@@ -15,7 +15,7 @@
   }
   
   .view-toggle button.active {
-    background-color: #535bf2;
+    background-color: #e51013;
   }
   
   @media (max-width: 768px) {

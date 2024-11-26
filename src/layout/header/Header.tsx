@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faTicket, faBars, faTimes, faRightFromBracket, faGlobe} from '@fortawesome/free-solid-svg-icons';
+import { faUser, faTicket, faBars, faTimes, faRightFromBracket, faGlobe, faMoon, faSun} from '@fortawesome/free-solid-svg-icons';
 import AuthService from '../../util/auth/authService';
 import {
   motion,
@@ -10,14 +10,17 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import './Header.css';
-import i18n from '../../locales/i18';
+import i18n from '../../locales/i18n';
 import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light'); // 기본 테마 상태
   // const [isMobile, setIsMobile] = useState(false);
+  const [showLangTooltip, setShowLangTooltip] = useState(false); // 언어 상태 표시
   const navigate = useNavigate();
+  const {t} = useTranslation();
   
   const logoVariants = {
     start: {
@@ -39,8 +42,17 @@ const Header: React.FC = () => {
       },
     },
   };
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme); // HTML의 data-theme 속성 업데이트
+    localStorage.setItem('theme', theme); // 테마를 로컬 스토리지에 저장
+  }, [theme]);
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light'); // 테마 전환
+  };
+
   const handleChangeLang= () => {
-    i18n.language === 'en' ? i18n.changeLanguage('ko') : i18n.changeLanguage('en');
+    i18n.language === 'en' ?  i18n.changeLanguage('ko') : i18n.changeLanguage('en');
+    // window.location.reload();
     
   };
 
@@ -97,10 +109,10 @@ const Header: React.FC = () => {
           {true && (
             <nav className="nav-links desktop-nav">
               <ul>
-                <li><Link to="/">홈</Link></li>
-                <li><Link to="/popular">대세 콘텐츠</Link></li>
-                <li><Link to="/wishlist">내가 찜한 리스트</Link></li>
-                <li><Link to="/search">찾아보기</Link></li>
+                <li><Link to="/">{t('header.home')}</Link></li>
+                <li><Link to="/popular">{t('header.popular')}</Link></li>
+                <li><Link to="/wishlist">{t('header.wishlist')}</Link></li>
+                <li><Link to="/search">{t('header.search')}</Link></li>
               </ul>
             </nav>
           )}
@@ -108,11 +120,30 @@ const Header: React.FC = () => {
 
         <div className="header-right">
           {/* user */}
-          <span><b>{user}</b></span>
+          <span style={{color:'white'}}><b>{user}  </b></span>
           
           {/* lang */}
-          <button     onClick={handleChangeLang}>
-          <span>{i18n.language === 'ko'? 'ko':'en'}</span>
+          <div className="language-button-wrapper">
+            <button
+              className="language-button"
+              onClick={handleChangeLang}
+              onMouseEnter={() => setShowLangTooltip(true)}
+              onMouseLeave={() => setShowLangTooltip(false)}
+            >
+              <FontAwesomeIcon
+                icon={faGlobe}
+                className={`language-icon ${showLangTooltip ? 'hidden' : ''}`}
+              />
+              <span className={`language-text ${showLangTooltip ? 'visible' : 'hidden'}`}>
+                {i18n.language === 'en' ? 'EN' : 'KO'}
+              </span>
+            </button>
+          </div>
+
+          
+          {/* theme */}
+          <button className="icon-button" onClick={toggleTheme}>
+            <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
           </button>
           
           {/* logout */}
@@ -137,10 +168,11 @@ const Header: React.FC = () => {
           </button>
           <nav>
             <ul>
-              <li><Link to="/" onClick={toggleMobileMenu}>홈</Link></li>
-              <li><Link to="/popular" onClick={toggleMobileMenu}>대세 콘텐츠</Link></li>
-              <li><Link to="/wishlist" onClick={toggleMobileMenu}>내가 찜한 리스트</Link></li>
-              <li><Link to="/search" onClick={toggleMobileMenu}>찾아보기</Link></li>
+              <li><Link to="/" onClick={toggleMobileMenu}>{t('header.home')}</Link></li>
+              <li><Link to="/popular" onClick={toggleMobileMenu}>{t('header.popular')}</Link></li>
+              <li><Link to="/wishlist" onClick={toggleMobileMenu}>{t('header.wishlist')}</Link></li>
+              <li><Link to="/search" onClick={toggleMobileMenu}>{t('header.search')}</Link></li>
+
             </ul>
           </nav>
         </div>

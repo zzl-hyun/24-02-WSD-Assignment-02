@@ -90,7 +90,7 @@ const MovieWishlist: React.FC = () => {
               <div key={movie.id} className={styles.movieCard} onClick={() => toggleWishlist(movie)}>
                 <img src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`} alt={movie.title} />
                 <div className={styles.movieTitle}>{movie.title}</div>
-                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>👍</div>}
+                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>❤️</div>}
               </div>
             ))}
           </div>
