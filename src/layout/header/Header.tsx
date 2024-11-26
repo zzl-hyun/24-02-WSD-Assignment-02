@@ -114,8 +114,18 @@ const Header: React.FC = () => {
           
           {/* lang */}
           <button     onClick={handleChangeLang}>
-          <span>{i18n.language === 'ko'? 'ko':'en'}</span>
+          <span style={{backgroundImage:`url(public/language_button_en.svg)`}}>{i18n.language === 'ko'? 'ko':'en'}</span>
           </button>
+                  {/* 언어 변경 드롭다운 */}
+        {/* <select
+          className="language-select"
+          value={i18n.language}
+          onChange={handleChangeLang}
+          style={{backgroundImage:`url(public/language_button_en.svg)`}}
+        >
+          <option value="en">English</option>
+          <option value="ko">한국어</option>
+        </select> */}
           
           {/* logout */}
           <button className="icon-button" onClick={logout}>
