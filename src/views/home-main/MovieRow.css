@@ -2,13 +2,23 @@
   position: absolute;
   top: 5px;
   right: 5px;
+  font-size: 12px;
   background-color: rgba(0, 0, 0, 0.7);
-  color: white;
   padding: 5px;
   border-radius: 50%;
-  font-size: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.3s ease-out;
 }
-
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 .movie-row {
   margin-bottom: 40px;
   position: relative;

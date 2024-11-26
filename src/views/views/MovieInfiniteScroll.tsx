@@ -52,17 +52,18 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
       const url = genreCode === "0" ? 'https://api.themoviedb.org/3/movie/popular' : 'https://api.themoviedb.org/3/discover/movie';
       const params = {
         api_key: apiKey,
-        language: 'ko-KR',
+        language: sortingOrder,
         page: reset ? 1 : currentPage,
-        ...(genreCode !== "0" && { with_genres: genreCode })
+        ...(genreCode !== "0" && { with_genres: genreCode }),
+        ...(sortingOrder !== 'all' && { with_original_language: sortingOrder }),
       };
-  
+      
       const response = await axios.get<APIResponse>(url, { params });
       let newMovies = response.data.results;
   
-      if (sortingOrder !== 'all') {
-        newMovies = newMovies.filter((movie) => movie.original_language === sortingOrder);
-      }
+      // if (sortingOrder !== 'all') {
+      //   newMovies = newMovies.filter((movie) => movie.original_language === sortingOrder);
+      // }
   
       newMovies = newMovies.filter((movie) =>
         voteEverage === -1 ? true : voteEverage === -2 ? movie.vote_average <= 4 : movie.vote_average >= voteEverage && movie.vote_average < voteEverage + 1
@@ -76,7 +77,9 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
       setCurrentPage(reset ? 1 : (prevPage) => prevPage + 1); // 수정된 부분
       if (newMovies.length === 0) setHasMore(false);
   
-      const cacheKey = `movies_${genreCode}_${reset ? 1 : currentPage}`;
+      // const cacheKey = `movies_${genreCode}_${reset ? 1 : currentPage}`;
+      const cacheKey = `movies_${genreCode}_${sortingOrder}_${reset ? 1 : currentPage}`;
+
       setCache(cacheKey, uniqueNewMovies, 3600000); // Cache for 1 hour
     } catch (error) {
       console.error('Error fetching movies:', error);
@@ -157,7 +160,7 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, ap
               <div key={movie.id} className={styles.movieCard} onMouseUp={() => toggleWishlist(movie)}>
                 <img src={getImageUrl(movie.poster_path)} alt={movie.title} loading="lazy" />
                 <div className={styles.movieTitle}>{movie.title}</div>
-                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>👍</div>}
+                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>❤️</div>}
               </div>
             ))}
           </div>
