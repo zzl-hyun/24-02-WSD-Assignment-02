@@ -50,7 +50,6 @@ const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
 
   return (
     <div className={styles.dropdownContainer}>
-      <label>선호하는 설정을 선택하세요</label>
       {Object.entries(dropdowns).map(([key, options]) => (
         <div key={key} className={styles.customSelect}>
           <div

@@ -3,6 +3,8 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-wrap: wrap; /* 모바일에서 줄바꿈을 허용 */
+
   }
   
   .customSelect {
@@ -76,4 +78,29 @@
   .clearOptions:hover {
     background-color: #333;
   }
+  @media (max-width: 1500px) {
+    .dropdownContainer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
   
+    .customSelect {
+      width: 100%;
+    }
+  
+    .selectSelected {
+      font-size: 14px;
+      padding: 10px;
+    }
+  
+    .selectItems {
+      font-size: 12px;
+    }
+  
+    .clearOptions {
+      width: 100%;
+      font-size: 14px;
+      padding: 10px;
+    }
+  }

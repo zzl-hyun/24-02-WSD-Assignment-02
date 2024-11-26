@@ -106,7 +106,7 @@ const Header: React.FC = () => {
             </Link>
           </div>
           {/* Show desktop navigation only if not on mobile */}
-          {!isMobile && (
+          {true && (
             <nav className="nav-links desktop-nav">
               <ul>
                 <li><Link to="/">{t('header.home')}</Link></li>
@@ -161,7 +161,7 @@ const Header: React.FC = () => {
       </header>
 
       {/* Mobile Navigation */}
-      {isMobile && (
+      {true && (
         <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           <button className="close-button" onClick={toggleMobileMenu}>
             <FontAwesomeIcon icon={faTimes} />
