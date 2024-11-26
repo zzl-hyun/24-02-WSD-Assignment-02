@@ -12,7 +12,7 @@ interface MovieInfiniteScrollProps {
   voteEverage?: number;
 }
 
-const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '0', apiKey, sortingOrder = 'all', voteEverage = -1 }) => {
+const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode, apiKey, sortingOrder, voteEverage = -1 }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,10 +76,8 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
       setCurrentPage(reset ? 1 : (prevPage) => prevPage + 1); // 수정된 부분
       if (newMovies.length === 0) setHasMore(false);
   
-      if (!reset) {
-        const cacheKey = `movies_${genreCode}_${reset ? 1 : currentPage}`;
-        setCache(cacheKey, uniqueNewMovies, 3600000); // Cache for 1 hour
-      }
+      const cacheKey = `movies_${genreCode}_${reset ? 1 : currentPage}`;
+      setCache(cacheKey, uniqueNewMovies, 3600000); // Cache for 1 hour
     } catch (error) {
       console.error('Error fetching movies:', error);
     } finally {
@@ -114,7 +112,6 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
 
 
   // Scroll to top and reset movies
-  // Scroll to top and reset movies
   const scrollToTopAndReset = () => {
     document.documentElement.scrollTop = 0; // 강제로 스크롤 초기화
     document.body.scrollTop = 0; // Safari 호환성
@@ -138,6 +135,11 @@ const MovieInfiniteScroll: React.FC<MovieInfiniteScrollProps> = ({ genreCode = '
   useEffect(() => {
     loadCachedMovies();
   }, []);
+
+  // 새로운 useEffect 추가
+  useEffect(() => {
+    fetchMovies(true); // 옵션이 변경될 때마다 영화 목록을 새로 로드
+  }, [genreCode, sortingOrder, voteEverage]);
 
   const getImageUrl = (path: string) => (path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg');
 

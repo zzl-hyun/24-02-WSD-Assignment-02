@@ -52,18 +52,24 @@ const HomeSearch: React.FC = () => {
     영어: 'en',
     한국어: 'ko',
   };
-  
+
   const changeOptions = (options: SearchOptions) => {
     const newGenreId = genreCode[options.originalLanguage] || '0';
     const newAgeId = ageCode[options.translationLanguage] || -1;
-    const newSortId = sortingCode[options.sorting] || 'all';
+    const newSortId = sortingCode[options.sorting];
   
     setGenreId(newGenreId);
     setAgeId(newAgeId);
     setSortId(newSortId);
-    console.log("Sorting:", sortingCode[options.sorting]);
+    console.log("genre age sort", genreId, ageId, sortId);
   };
 
+  useEffect(() => {
+    setCache('genreCode', genreId, 3600000); // Cache for 1 hour
+    setCache('ageCode', ageId, 3600000); // Cache for 1 hour
+    setCache('sortingCode', sortId, 3600000); // Cache for 1 hour
+  }, [genreId, ageId, sortId]);
+  
   useEffect(() => {
     const cachedGenreCode = getCache('genreCode');
     const cachedAgeCode = getCache('ageCode');
@@ -74,11 +80,7 @@ const HomeSearch: React.FC = () => {
     if (cachedSortingCode) setSortId(cachedSortingCode);
   }, []);
 
-  useEffect(() => {
-    setCache('genreCode', genreId, 3600000); // Cache for 1 hour
-    setCache('ageCode', ageId, 3600000); // Cache for 1 hour
-    setCache('sortingCode', sortId, 3600000); // Cache for 1 hour
-  }, [genreId, ageId, sortId]);
+
 
   return (
     <div className={styles.containerSearch}>
