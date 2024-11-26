@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light'); // 기본 테마 상태
-  // const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [showLangTooltip, setShowLangTooltip] = useState(false); // 언어 상태 표시
   const navigate = useNavigate();
   const {t} = useTranslation();
@@ -106,7 +106,7 @@ const Header: React.FC = () => {
             </Link>
           </div>
           {/* Show desktop navigation only if not on mobile */}
-          {true && (
+          {!isMobile && (
             <nav className="nav-links desktop-nav">
               <ul>
                 <li><Link to="/">{t('header.home')}</Link></li>
@@ -161,7 +161,7 @@ const Header: React.FC = () => {
       </header>
 
       {/* Mobile Navigation */}
-      {true && (
+      {isMobile && (
         <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           <button className="close-button" onClick={toggleMobileMenu}>
             <FontAwesomeIcon icon={faTimes} />
