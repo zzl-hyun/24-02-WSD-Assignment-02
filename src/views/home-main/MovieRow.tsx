@@ -4,6 +4,7 @@ import { useWishlistService } from '../../util/movie/wishlist';
 import axios from 'axios';
 import i18n from '../../locales/i18n';
 import { useTranslation } from 'react-i18next';
+import {setCache, getCache} from '../../util/cache/movieCache'
 import './MovieRow.css';
 
 interface MovieRowProps {
@@ -22,11 +23,43 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
   const { toggleWishlist, isInWishlist } = useWishlistService();
   const {t} = useTranslation();
 
+// fetchUrl에서 장르 번호와 언어 값을 추출하는 함수
+const extractParamsFromUrl = (url: string): { category: string; genre: string; language: string; page: string } => {
+  const categoryMatch = url.match(/\/movie\/(popular|top_rated)/); // 카테고리 추출
+  const genreMatch = url.match(/with_genres=([^&]*)/); // 장르 추출
+  const languageMatch = url.match(/language=([^&]*)/); // 언어 추출
+  const pageMatch = url.match(/page=([^&]*)/); // 페이지 번호 추출
+  return {
+    category: categoryMatch ? categoryMatch[1] : 'discover', // 카테고리가 없으면 'discover'
+    genre: genreMatch ? genreMatch[1] : 'all', // 장르가 없으면 'all'
+    language: languageMatch ? languageMatch[1] : 'en', // 언어가 없으면 'en'
+    page: pageMatch ? pageMatch[1] : '1', // 페이지가 없으면 '1'
+  };
+};
+
+const { category, genre, language, page } = extractParamsFromUrl(fetchUrl);
+const cacheKey = `movieRow_${category}_${genre}_${language}_page${page}`;
+
   const fetchMovies = useCallback(async () => {
+
+    // cache check
+    // const cacheKey = `movieRow_${genre}_${language}`;
+    const cachedMovies = getCache(cacheKey);
+    if (cachedMovies) {
+      setMovies(cachedMovies);
+      console.log("movieRow cache 발견")
+      return;
+    }
+
+    // no cache
     try {
       const response = await axios.get<APIResponse>(fetchUrl);
-      setMovies(response.data.results || []);
-      console.log("movieRow lang: ", i18n.language)
+      const fetchedMovies = response.data.results || [];
+      console.log(fetchUrl)
+      setMovies(fetchedMovies);
+      setCache(cacheKey, fetchedMovies, 3600000); // 1시간 동안 캐시 유지
+
+      console.log("movieRow fetch movies")
     } catch (error) {
       console.error('Error fetching movies:', error);
       setMovies([]);

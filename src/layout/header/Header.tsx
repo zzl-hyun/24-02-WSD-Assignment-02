@@ -110,7 +110,7 @@ const Header: React.FC = () => {
 
         <div className="header-right">
           {/* user */}
-          <span><b>{user}</b></span>
+          <span><b>{user}  </b></span>
           
           {/* lang */}
           <button     onClick={handleChangeLang}>
