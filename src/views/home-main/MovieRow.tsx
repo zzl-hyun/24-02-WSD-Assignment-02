@@ -143,7 +143,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
             ref={sliderRef}
             style={{ transform: `translateX(-${scrollAmount}px)` }}
           >
-            {/* {movies.map(renderMovieCard)} */}
+            {movies.map(renderMovieCard)}
 
 
           </div>
