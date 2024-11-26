@@ -55,23 +55,11 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
     if (timeLeft === 0) {
       setShowImage(false);
       setIsPlaying(true);
-      const volumeSlider = document.querySelector('.ytp-volume-area');
-      // 현재 볼륨 값 변경
-      if (volumeSlider) {
-        const volumePanel = volumeSlider.closest('.ytp-volume-panel'); // 패널 전체 가져오기
-    
-        // aria-valuenow를 업데이트
-        if (volumePanel) {
-          volumePanel.setAttribute('aria-valuenow', '50'); // 볼륨 50으로 설정
-          volumePanel.setAttribute('aria-valuetext', '50% 볼륨');
-        }
-      }
     }
   }, [teaserKey, timeLeft]);
 
 
   if (!movie) return null;
-
   const backdropUrl = `https://image.tmdb.org/t/p/original${movie.backdrop_path}`;
 
 

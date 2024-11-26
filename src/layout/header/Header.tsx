@@ -10,7 +10,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import './Header.css';
-import i18n from '../../locales/i18';
+import i18n from '../../locales/i18n';
 import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
@@ -18,6 +18,7 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+  const {t} = useTranslation();
   
   const logoVariants = {
     start: {
@@ -41,6 +42,7 @@ const Header: React.FC = () => {
   };
   const handleChangeLang= () => {
     i18n.language === 'en' ? i18n.changeLanguage('ko') : i18n.changeLanguage('en');
+    // window.location.reload();
     
   };
 
@@ -97,10 +99,10 @@ const Header: React.FC = () => {
           {true && (
             <nav className="nav-links desktop-nav">
               <ul>
-                <li><Link to="/">홈</Link></li>
-                <li><Link to="/popular">대세 콘텐츠</Link></li>
-                <li><Link to="/wishlist">내가 찜한 리스트</Link></li>
-                <li><Link to="/search">찾아보기</Link></li>
+                <li><Link to="/">{t('header.home')}</Link></li>
+                <li><Link to="/popular">{t('header.popular')}</Link></li>
+                <li><Link to="/wishlist">{t('header.wishlist')}</Link></li>
+                <li><Link to="/search">{t('header.search')}</Link></li>
               </ul>
             </nav>
           )}
@@ -137,10 +139,11 @@ const Header: React.FC = () => {
           </button>
           <nav>
             <ul>
-              <li><Link to="/" onClick={toggleMobileMenu}>홈</Link></li>
-              <li><Link to="/popular" onClick={toggleMobileMenu}>대세 콘텐츠</Link></li>
-              <li><Link to="/wishlist" onClick={toggleMobileMenu}>내가 찜한 리스트</Link></li>
-              <li><Link to="/search" onClick={toggleMobileMenu}>찾아보기</Link></li>
+              <li><Link to="/" onClick={toggleMobileMenu}>{t('header.home')}</Link></li>
+              <li><Link to="/popular" onClick={toggleMobileMenu}>{t('header.popular')}</Link></li>
+              <li><Link to="/wishlist" onClick={toggleMobileMenu}>{t('header.wishlist')}</Link></li>
+              <li><Link to="/search" onClick={toggleMobileMenu}>{t('header.search')}</Link></li>
+
             </ul>
           </nav>
         </div>

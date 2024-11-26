@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Movie, APIResponse } from '../../models/types';
 import { useWishlistService } from '../../util/movie/wishlist';
 import axios from 'axios';
+import i18n from '../../locales/i18n';
+import { useTranslation } from 'react-i18next';
 import './MovieRow.css';
 
 interface MovieRowProps {
@@ -18,22 +20,22 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
   const [maxScroll, setMaxScroll] = useState(0);
   const [hoveredMovieId, setHoveredMovieId] = useState<number | null>(null); // Hover 상태를 추적하는 state
   const { toggleWishlist, isInWishlist } = useWishlistService();
-
-  
+  const {t} = useTranslation();
 
   const fetchMovies = useCallback(async () => {
     try {
       const response = await axios.get<APIResponse>(fetchUrl);
       setMovies(response.data.results || []);
+      console.log("movieRow lang: ", i18n.language)
     } catch (error) {
       console.error('Error fetching movies:', error);
       setMovies([]);
     }
-  }, [fetchUrl]);
+  }, [fetchUrl, i18n.language]);
 
   useEffect(() => {
     fetchMovies();
-  }, [fetchUrl]);
+  }, [fetchUrl, i18n.language]);
   
   const calculateMaxScroll = useCallback(() => {
     if (sliderRef.current && sliderWindowRef.current) {
@@ -51,8 +53,6 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
       window.removeEventListener('resize', handleResize);
     };
   }, [movies, calculateMaxScroll]);
-
-
 
   useEffect(() => {
     const sliderContainer = sliderWindowRef.current;
@@ -75,11 +75,6 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
       return direction === 'left' ? Math.max(0, prevScroll - slideAmount) : Math.min(maxScroll, prevScroll + slideAmount);
     });
   };
-
-
-
-
-
 
 
   const handleTouchStart = (event: React.TouchEvent) => {
@@ -111,8 +106,8 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
       <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
       <span>{movie.title}</span>
       <div>
-        <span>개봉일: {movie.release_date}</span>
-        <span><br />평점:⭐{movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}</span>
+        <span>{t('movies.releaseDate')}: {movie.release_date}</span>
+        <span><br />{t('movies.rate')}:⭐{movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}</span>
       </div>
       {isInWishlist(movie.id) && <div className="wishlist-indicator">⭐</div>}
       {/* 영화 설명 표시 */}
@@ -123,6 +118,8 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
       )}
     </div>
   );
+
+
 
   return (
     <div
@@ -146,7 +143,9 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
             ref={sliderRef}
             style={{ transform: `translateX(-${scrollAmount}px)` }}
           >
-            {movies.map(renderMovieCard)}
+            {/* {movies.map(renderMovieCard)} */}
+
+
           </div>
         </div>
         <button
