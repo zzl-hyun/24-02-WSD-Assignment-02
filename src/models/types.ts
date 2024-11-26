@@ -1,8 +1,9 @@
 export interface SearchOptions {
     [key: string]: string;  // 인덱스 시그니처 추가
+    genre: string;
+    // translationLanguage: string;
+    vote_average:string;
     originalLanguage: string;
-    translationLanguage: string;
-    sorting: string;
   }
   
   export interface Movie {

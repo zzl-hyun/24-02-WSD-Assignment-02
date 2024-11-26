@@ -3,22 +3,22 @@
 import React, { useState } from 'react';
 import { SearchOptions } from '../../models/types';
 import styles from './MovieSearch.module.css';
-
+import { useTranslation } from 'react-i18next';
 interface MovieSearchProps {
   onChangeOptions: (options: SearchOptions) => void;
 }
 
 const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
   const DEFAULT_OPTIONS: SearchOptions = {
-    originalLanguage: '장르 (전체)',
-    translationLanguage: '평점 (전체)',
-    sorting: '언어 (전체)',
+    genre: '장르 (전체)',
+    vote_average: '평점 (전체)',
+    originalLanguage: '언어 (전체)',
   };
 
   const dropdowns = {
-    originalLanguage: ['장르 (전체)', 'Action', 'Adventure', 'Comedy', 'Crime', 'Family', 'Animation', 'Documentary', 'Drama', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction', 'TV Movie', 'Thriller', 'War', 'Western'],
-    translationLanguage: ['평점 (전체)', '9~10', '8~9', '7~8', '6~7', '5~6', '4~5', '4점 이하'],
-    sorting: ['언어 (전체)', '영어', '한국어'],
+    genre: ['장르 (전체)', 'Action', 'Adventure', 'Comedy', 'Crime', 'Family', 'Animation', 'Documentary', 'Drama', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction', 'TV Movie', 'Thriller', 'War', 'Western'],
+    vote_average: ['평점 (전체)', '9~10', '8~9', '7~8', '6~7', '5~6', '4~5', '4점 이하'],
+    originalLanguage: ['언어 (전체)', '영어', '한국어'],
   };
 
   const [selectedOptions, setSelectedOptions] = useState<SearchOptions>({ ...DEFAULT_OPTIONS });

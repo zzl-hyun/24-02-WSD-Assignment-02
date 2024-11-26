@@ -25,7 +25,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
 
 // fetchUrl에서 장르 번호와 언어 값을 추출하는 함수
 const extractParamsFromUrl = (url: string): { category: string; genre: string; language: string; page: string } => {
-  const categoryMatch = url.match(/\/movie\/(popular|top_rated)/); // 카테고리 추출
+  const categoryMatch = url.match(/\/movie\/(popular|top_rated|upcoming)/); // 카테고리 추출
   const genreMatch = url.match(/with_genres=([^&]*)/); // 장르 추출
   const languageMatch = url.match(/language=([^&]*)/); // 언어 추출
   const pageMatch = url.match(/page=([^&]*)/); // 페이지 번호 추출
@@ -40,31 +40,31 @@ const extractParamsFromUrl = (url: string): { category: string; genre: string; l
 const { category, genre, language, page } = extractParamsFromUrl(fetchUrl);
 const cacheKey = `movieRow_${category}_${genre}_${language}_page${page}`;
 
-  const fetchMovies = useCallback(async () => {
+const fetchMovies = useCallback(async () => {
 
-    // cache check
-    // const cacheKey = `movieRow_${genre}_${language}`;
-    const cachedMovies = getCache(cacheKey);
-    if (cachedMovies) {
-      setMovies(cachedMovies);
-      console.log("movieRow cache 발견")
-      return;
-    }
+  // cache check
+  // const cacheKey = `movieRow_${genre}_${language}`;
+  const cachedMovies = getCache(cacheKey);
+  if (cachedMovies) {
+    setMovies(cachedMovies);
+    console.log("movieRow cache 발견")
+    return;
+  }
 
-    // no cache
-    try {
-      const response = await axios.get<APIResponse>(fetchUrl);
-      const fetchedMovies = response.data.results || [];
-      console.log(fetchUrl)
-      setMovies(fetchedMovies);
-      setCache(cacheKey, fetchedMovies, 3600000); // 1시간 동안 캐시 유지
+  // no cache
+  try {
+    const response = await axios.get<APIResponse>(fetchUrl);
+    const fetchedMovies = response.data.results || [];
+    console.log(fetchUrl)
+    setMovies(fetchedMovies);
+    setCache(cacheKey, fetchedMovies, 3600000); // 1시간 동안 캐시 유지
 
-      console.log("movieRow fetch movies")
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-      setMovies([]);
-    }
-  }, [fetchUrl, i18n.language]);
+    console.log("movieRow fetch movies")
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+    setMovies([]);
+  }
+}, [fetchUrl, i18n.language]);
 
   useEffect(() => {
     fetchMovies();

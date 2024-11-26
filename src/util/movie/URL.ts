@@ -14,15 +14,16 @@ class URLService {
       return undefined;
     }
   };
-  getURL4ReleaseMovies = (apiKey: string, page: number = 2): string => {
-    const language = i18n.language;
-    return `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=${language}&page=${page}`;
-  };
+
   getURL4PopularMovies = (apiKey: string, page: number = 1): string => {
     const language = i18n.language;
     return `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=${language}&page=${page}`;
   };
-  getURL4TopRatedMovies = (apiKey: string, page: number = 2): string => {
+  getURL4ReleaseMovies = (apiKey: string, page: number = 1): string => {
+    const language = i18n.language;
+    return `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=${language}&page=${page}`;
+  };
+  getURL4TopRatedMovies = (apiKey: string, page: number = 1): string => {
     const language = i18n.language;
     return `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=${language}&page=${page}`;
   };
