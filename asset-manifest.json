@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/24-02-WSD-Assignment-02/static/css/main.0cfd9e23.css",
-    "main.js": "/24-02-WSD-Assignment-02/static/js/main.278d850e.js",
+    "main.css": "/24-02-WSD-Assignment-02/static/css/main.bd17ae67.css",
+    "main.js": "/24-02-WSD-Assignment-02/static/js/main.f3e43e02.js",
     "reactPlayerYouTube.js": "/24-02-WSD-Assignment-02/static/js/reactPlayerYouTube.5abfbc5f.chunk.js",
     "reactPlayerSoundCloud.js": "/24-02-WSD-Assignment-02/static/js/reactPlayerSoundCloud.4bdecaa2.chunk.js",
     "reactPlayerVimeo.js": "/24-02-WSD-Assignment-02/static/js/reactPlayerVimeo.25c13350.chunk.js",
@@ -19,8 +19,8 @@
     "static/js/453.1c29ee80.chunk.js": "/24-02-WSD-Assignment-02/static/js/453.1c29ee80.chunk.js",
     "static/media/KR-ko-20241028-TRIFECTA-perspective_f2398a80-2c24-4907-b982-bb2fda80136a_medium.jpg": "/24-02-WSD-Assignment-02/static/media/KR-ko-20241028-TRIFECTA-perspective_f2398a80-2c24-4907-b982-bb2fda80136a_medium.f0c8c966485e45f56515.jpg",
     "index.html": "/24-02-WSD-Assignment-02/index.html",
-    "main.0cfd9e23.css.map": "/24-02-WSD-Assignment-02/static/css/main.0cfd9e23.css.map",
-    "main.278d850e.js.map": "/24-02-WSD-Assignment-02/static/js/main.278d850e.js.map",
+    "main.bd17ae67.css.map": "/24-02-WSD-Assignment-02/static/css/main.bd17ae67.css.map",
+    "main.f3e43e02.js.map": "/24-02-WSD-Assignment-02/static/js/main.f3e43e02.js.map",
     "reactPlayerYouTube.5abfbc5f.chunk.js.map": "/24-02-WSD-Assignment-02/static/js/reactPlayerYouTube.5abfbc5f.chunk.js.map",
     "reactPlayerSoundCloud.4bdecaa2.chunk.js.map": "/24-02-WSD-Assignment-02/static/js/reactPlayerSoundCloud.4bdecaa2.chunk.js.map",
     "reactPlayerVimeo.25c13350.chunk.js.map": "/24-02-WSD-Assignment-02/static/js/reactPlayerVimeo.25c13350.chunk.js.map",
@@ -38,7 +38,7 @@
     "453.1c29ee80.chunk.js.map": "/24-02-WSD-Assignment-02/static/js/453.1c29ee80.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0cfd9e23.css",
-    "static/js/main.278d850e.js"
+    "static/css/main.bd17ae67.css",
+    "static/js/main.f3e43e02.js"
   ]
 }
