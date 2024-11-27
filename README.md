@@ -2,7 +2,6 @@
 ## 프로젝트 기본 정보
 React.js 또는 Vue.js를 활용해 Single Page Application (SPA)를 개발하고, 이를 Github pages를 활용하여 정적 웹사이트 배포
 
-## 기술 스택
 
 ## 기술 스택
 ![Node.js](https://img.shields.io/badge/Node.js-%23339933.svg?style=for-the-badge&logo=node.js&logoColor=white)
