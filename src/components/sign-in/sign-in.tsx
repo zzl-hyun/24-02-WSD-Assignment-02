@@ -44,7 +44,7 @@ const SignIn: React.FC = () => {
     rememberMe,
     acceptTerms,
   } = useSelector((state: RootState) => state.auth);
- 
+  const [welcome, setWelcome] = useState(false);
   const isLoginFormValid = email && password;
   const isRegisterFormValid = registerEmail && registerPassword && acceptTerms;
 
@@ -82,10 +82,12 @@ const SignIn: React.FC = () => {
         dispatch(setRememberUser({ email, password, rememberMe }));
   
         // 애니메이션 실행
+        setWelcome(true);
         await logoAnimationSequence(logoControls, boxControls, setIsLoginVisible);
   
         // 애니메이션 종료 후 페이지 이동
         navigate("/");
+        setWelcome(false);
       } else if (tryLogin.rejected.match(result)) {
         toast.error(result.payload as string);
       }
@@ -137,33 +139,38 @@ const SignIn: React.FC = () => {
   
 
   const toggleCard = async () => {
-    if (isLoginVisible) {
-      await boxControls.start({
-        rotateY: 180,
-        scale: 0.8,
-        transition: { duration: 0.5 },
-      });
-      setIsLoginVisible(false);
-      await boxControls.start({
-        rotateY: 0,
-        scale: 1,
-        transition: { duration: 0.5 },
-      });
-    } else {
-      await boxControls.start({
-        rotateY: 180,
-        scale: 0.8,
-        transition: { duration: 0.5 },
-      });
-      setIsLoginVisible(true);
-      await boxControls.start({
-        rotateY: 0,
-        scale: 1,
-        transition: { duration: 0.5 },
-      });
-    }
-  };
+    const transition = { duration: 0.6, ease: [0.68, -0.55, 0.265, 1.55] }; // 부드러운 이징 적용
+  if (isLoginVisible) {
+    await boxControls.start({
+      rotateY: 180,
+      scale: 0.8,
+      opacity: 0,
+      transition,
+    });
+    setIsLoginVisible(false);
+    await boxControls.start({ rotateY: 0, scale: 1, opacity: 1, transition });
+  } else {
+    await boxControls.start({
+      rotateY: 180,
+      scale: 0.8,
+      opacity: 0,
+      transition,
+    });
+    setIsLoginVisible(true);
+    await boxControls.start({ rotateY: 0, scale: 1, opacity: 1, transition });
+  }
+};
+const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+  const label = event.target.previousElementSibling;
+  if (label) label.classList.add("label-active", "label-blue");
+};
 
+const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+  const label = event.target.previousElementSibling;
+  if (label && !event.target.value) {
+    label.classList.remove("label-active", "label-blue");
+  }
+};
   // useEffect(()=>{
   //   logoAnimationSequence(logoControls, boxControls);
   // }, [logoControls, boxControls]);
@@ -173,7 +180,7 @@ const SignIn: React.FC = () => {
       <div className="bg-image"></div>
       <div className="container">
         <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
-        <Link to="/">
+        {welcome && (<Link to="/">
           <motion.div
             className="logo-container"
             initial={{
@@ -214,7 +221,7 @@ const SignIn: React.FC = () => {
               />
             </motion.svg>
           </motion.div>
-        </Link>
+        </Link>)}
         <AnimatePresence>
         <motion.div
           // id="phone"
@@ -234,6 +241,8 @@ const SignIn: React.FC = () => {
                       id="email"
                       type="email"
                       value={email}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
                       onChange={(e) => dispatch(setEmail(e.target.value))}
                     />
                     <label htmlFor="email">Email</label>
@@ -262,9 +271,9 @@ const SignIn: React.FC = () => {
                   <button className="signin-button" disabled={!isLoginFormValid}>Login</button>
                 </form>
                 <a href="javascript:void(0)" className="account-check" onClick={toggleCard}>
-                  
                   <span id='signup' >Already have an account? <b>Sign in</b></span>
                 </a>
+
               </div>
               {/* register form */}
               <div className={`card ${isLoginVisible ? 'hidden' : ''}`} id="register">
