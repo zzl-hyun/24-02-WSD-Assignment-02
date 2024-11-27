@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light'); // 기본 테마 상태
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark'); // 기본 테마 상태
   const [isMobile, setIsMobile] = useState(false);
   const [showLangTooltip, setShowLangTooltip] = useState(false); // 언어 상태 표시
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
     localStorage.setItem('theme', theme); // 테마를 로컬 스토리지에 저장
   }, [theme]);
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light'); // 테마 전환
+    setTheme(theme === 'dark' ? 'light' : 'dark'); // 테마 전환
   };
 
   const handleChangeLang= () => {
