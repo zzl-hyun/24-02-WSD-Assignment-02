@@ -37,5 +37,8 @@
       "thrillerMovie": "Thriller",
       "warMovie": "War",
       "westernMovie": "Western"
+  },
+  "button":{
+    "reset":"Reset"
   }
 }

@@ -37,5 +37,8 @@
         "thrillerMovie": "스릴러",
         "warMovie": "전쟁",
         "westernMovie": "서부"
+    },
+    "button":{
+      "reset":"초기화"
     }
 }

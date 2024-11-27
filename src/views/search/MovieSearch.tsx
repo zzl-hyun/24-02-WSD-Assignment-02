@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { SearchOptions } from '../../models/types';
 import styles from './MovieSearch.module.css';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown, faArrowDown19, faSortDown } from '@fortawesome/free-solid-svg-icons';
 interface MovieSearchProps {
   onChangeOptions: (options: SearchOptions) => void;
 }
@@ -56,7 +58,7 @@ const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
             className={styles.selectSelected}
             onClick={() => toggleDropdown(key)}
           >
-            {selectedOptions[key as keyof SearchOptions]}
+            {selectedOptions[key as keyof SearchOptions]} <FontAwesomeIcon icon={faSortDown}/>
           </div>
 
           {activeDropdown === key && (
@@ -73,8 +75,7 @@ const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
           )}
         </div>
       ))}
-      <button className={styles.clearOptions} onClick={clearOptions}>
-        초기화
+      <button className={styles.clearOptions} onClick={clearOptions}>{t('button.reset')}
       </button>
     </div>
   );
