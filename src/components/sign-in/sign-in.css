@@ -217,6 +217,7 @@
   .label-blue {
     color: #2069ff !important;
   }
+
   
   [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
     position: absolute;
@@ -291,7 +292,7 @@
   }
   
   .card {
-    border-radius:10px;
+    border-radius:50px;
     width:100%;
     max-width: 800px;
     position:absolute;
@@ -352,10 +353,34 @@
   }
   
   .card.hidden {
-    background-color:#494d53ab;
-    box-shadow: 0px 20px 40px rgba(339,16,19,0.4);
-    padding:0px 30px 0px 30px;
+    background-color: #494d53ab;
+    box-shadow: 0px 10px 20px rgba(339, 16, 19, 0.4);
+    padding: 0px 15px 0px 15px;
+    animation: rainbow-glow 10s infinite alternate; /* 무한 반복 애니메이션 */
   }
+
+  
+  @keyframes rainbow-glow {
+    0% {
+      box-shadow: 0px 20px 40px rgba(255, 0, 0, 0.8); /* Red */
+    }
+    20% {
+      box-shadow: 0px 20px 40px rgba(255, 165, 0, 0.8); /* Orange */
+    }
+    40% {
+      box-shadow: 0px 20px 40px rgba(255, 255, 0, 0.8); /* Yellow */
+    }
+    60% {
+      box-shadow: 0px 20px 40px rgba(0, 255, 0, 0.8); /* Green */
+    }
+    80% {
+      box-shadow: 0px 20px 40px rgba(0, 0, 255, 0.8); /* Blue */
+    }
+    100% {
+      box-shadow: 0px 20px 40px rgba(75, 0, 130, 0.8); /* Indigo */
+    }
+  }
+  
   
   #register.hidden form {
     transform:translateX(20px);

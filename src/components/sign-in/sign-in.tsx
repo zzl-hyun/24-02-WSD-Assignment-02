@@ -161,16 +161,19 @@ const SignIn: React.FC = () => {
   }
 };
 const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-  const label = event.target.previousElementSibling;
+  const parent = event.target.parentElement; // 부모 요소 접근
+  const label = parent?.querySelector("label"); // 부모 안에서 label 검색
   if (label) label.classList.add("label-active", "label-blue");
 };
 
 const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-  const label = event.target.previousElementSibling;
+  const parent = event.target.parentElement; // 부모 요소 접근
+  const label = parent?.querySelector("label"); // 부모 안에서 label 검색
   if (label && !event.target.value) {
     label.classList.remove("label-active", "label-blue");
   }
 };
+
   // useEffect(()=>{
   //   logoAnimationSequence(logoControls, boxControls);
   // }, [logoControls, boxControls]);
@@ -233,9 +236,9 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
           <div id="phone">
             <div id="content-wrapper">
               {/* Login Form */}
-              <div className={`card ${!isLoginVisible ? 'hidden' : ''}`} id="login">
+              <div className={`card ${!isLoginVisible ? 'hidden' : ''}`} id="login">                
                 <form onSubmit={handleLogin}>
-                  <h1>Sign in</h1>
+                  <h1>Login</h1>
                   <div className={`input ${email ? 'active' : ''}`}>
                     <input
                       id="email"
@@ -252,6 +255,8 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
                       id="password"
                       type="password"
                       value={password}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
                       onChange={(e) => dispatch(setPassword(e.target.value))}
                     />
                     <label htmlFor="password">Password</label>
@@ -261,13 +266,12 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
                       type="checkbox"
                       id="remember"
                       checked={rememberMe}
+              
                       onChange={() => dispatch(setRememberMe(!rememberMe))}
                     />
                     <label className="read-text" htmlFor="remember">Remember me</label>
                   </span>
-                  <span className="checkbox forgot">
-                    <a href="javascript:void(0)">Forgot Password?</a>
-                  </span>
+        
                   <button className="signin-button" disabled={!isLoginFormValid}>Login</button>
                 </form>
                 <a href="javascript:void(0)" className="account-check" onClick={toggleCard}>
@@ -278,11 +282,13 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
               {/* register form */}
               <div className={`card ${isLoginVisible ? 'hidden' : ''}`} id="register">
                 <form onSubmit={handleRegister}>
-                  <h1>Sign up</h1>
+                  <h1>Register</h1>
                   <div className={`input ${registerEmail ? 'active' : ''}`}>
                     <input
                       id="register-email"
                       type="email"
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
                       value={registerEmail}
                       onChange={(e) => dispatch(setRegisterEmail(e.target.value))}
                     />
@@ -292,6 +298,8 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
                     <input
                       id="register-password"
                       type="password"
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
                       value={registerPassword}
                       onChange={(e) => dispatch(setRegisterPassword(e.target.value))}
                     />
@@ -301,6 +309,8 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
                     <input
                       id="confirm-password"
                       type="password"
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
                       value={confirmPassword}
                       onChange={(e) => dispatch(setConfirmPassword(e.target.value))}
                     />
