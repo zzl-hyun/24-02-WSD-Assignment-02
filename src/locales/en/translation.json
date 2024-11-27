@@ -16,6 +16,26 @@
       "documentary": "Documentary",
       "drama": "Drama",
       "releaseDate": "Date",
-      "rate": "Rate"
+      "rate": "Rate",
+      "genreAll": "Genre (All)",
+      "voteAll": "Vote Average (All)",
+      "languageAll": "Language (All)",
+      "languageEnglish": "English",
+      "languageKorean": "Korean",
+      "voteBelow4": "Below 4",
+      "clearOptions": "Clear Options",
+      "adventureMovie": "Adventure",
+      "crimeMovie": "Crime",
+      "fantasyMovie": "Fantasy",
+      "historyMovie": "History",
+      "horrorMovie": "Horror",
+      "musicMovie": "Music",
+      "mysteryMovie": "Mystery",
+      "romanceMovie": "Romance",
+      "scifiMovie": "Science Fiction",
+      "tvMovie": "TV Movie",
+      "thrillerMovie": "Thriller",
+      "warMovie": "War",
+      "westernMovie": "Western"
   }
 }

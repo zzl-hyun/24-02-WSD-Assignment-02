@@ -16,6 +16,26 @@
         "documentary": "다큐",
         "drama": "드라마",
         "releaseDate": "개봉일",
-        "rate": "평점"
+        "rate": "평점",
+        "genreAll": "장르 (전체)",
+        "voteAll": "평점 (전체)",
+        "languageAll": "언어 (전체)",
+        "languageEnglish": "영어",
+        "languageKorean": "한국어",
+        "voteBelow4": "4점 이하",
+        "clearOptions": "초기화",
+        "adventureMovie": "모험",
+        "crimeMovie": "범죄",
+        "fantasyMovie": "판타지",
+        "historyMovie": "역사",
+        "horrorMovie": "공포",
+        "musicMovie": "음악",
+        "mysteryMovie": "미스터리",
+        "romanceMovie": "로맨스",
+        "scifiMovie": "SF",
+        "tvMovie": "TV 영화",
+        "thrillerMovie": "스릴러",
+        "warMovie": "전쟁",
+        "westernMovie": "서부"
     }
 }

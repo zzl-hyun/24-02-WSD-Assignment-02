@@ -14,7 +14,7 @@ const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
     vote_average: '평점 (전체)',
     originalLanguage: '언어 (전체)',
   };
-
+  const {t} = useTranslation();
   const dropdowns = {
     genre: ['장르 (전체)', 'Action', 'Adventure', 'Comedy', 'Crime', 'Family', 'Animation', 'Documentary', 'Drama', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction', 'TV Movie', 'Thriller', 'War', 'Western'],
     vote_average: ['평점 (전체)', '9~10', '8~9', '7~8', '6~7', '5~6', '4~5', '4점 이하'],
@@ -58,6 +58,7 @@ const MovieSearch: React.FC<MovieSearchProps> = ({ onChangeOptions }) => {
           >
             {selectedOptions[key as keyof SearchOptions]}
           </div>
+
           {activeDropdown === key && (
             <div className={styles.selectItems}>
               {options.map((option) => (

@@ -1,7 +1,7 @@
 // src/components/home/HomePopular.tsx
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTh, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faGrip } from '@fortawesome/free-solid-svg-icons';
 import MovieGrid from '../../../views/views/MovieGrid';
 import MovieInfiniteScroll from '../../../views/views/MovieInfiniteScroll';
 import URLService from '../../../util/movie/URL';
@@ -62,7 +62,7 @@ const HomePopular: React.FC = () => {
           onClick={() => setCurrentView('grid')}
           className={currentView === 'grid' ? 'active' : ''}
         >
-          <FontAwesomeIcon icon={faTh} />
+          <FontAwesomeIcon icon={faGrip} />
         </button>
         <button
           onClick={() => setCurrentView('list')}

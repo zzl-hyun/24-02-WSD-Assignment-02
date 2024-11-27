@@ -20,7 +20,7 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
   const [teaserKey, setTeaserKey] = useState<string | null>(null); // teaser key 상태
   const [showImage, setShowImage] = useState(true); // 이미지 배너 상태
   const [isPlaying, setIsPlaying] = useState(false); // 티저 재생 상태
-  const [timeLeft, setTimeLeft] = useState(5); // 초기 남은 시간 (3초)
+  const [timeLeft, setTimeLeft] = useState(10); // 초기 남은 시간 
   const playerRef = useRef<ReactPlayer>(null);
   const urlService = new URLService();
 
@@ -88,7 +88,7 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
               <div
                 className="progress-bar"
                 style={{
-                  width: `${((5 - timeLeft) / 5) * 100}%`, // 진행 상태를 백분율로 계산
+                  width: `${((10 - timeLeft) / 10) * 100}%`, // 진행 상태를 백분율로 계산
                 }}
               ></div>
               <span >

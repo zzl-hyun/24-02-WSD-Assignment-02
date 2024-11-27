@@ -5,7 +5,9 @@ import axios from 'axios';
 import i18n from '../../locales/i18n';
 import { useTranslation } from 'react-i18next';
 import {setCache, getCache} from '../../util/cache/movieCache'
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import './MovieRow.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface MovieRowProps {
   title: string;
@@ -168,7 +170,7 @@ const fetchMovies = useCallback(async () => {
           style={{ opacity: showButtons && scrollAmount > 0 ? 1 : 0 }}
           disabled={scrollAmount <= 0}
         >
-          &lt;
+          <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
         <div className="slider-window" ref={sliderWindowRef}>
           <div
@@ -177,8 +179,6 @@ const fetchMovies = useCallback(async () => {
             style={{ transform: `translateX(-${scrollAmount}px)` }}
           >
             {movies.map(renderMovieCard)}
-
-
           </div>
         </div>
         <button
@@ -187,7 +187,7 @@ const fetchMovies = useCallback(async () => {
           style={{ opacity: showButtons && scrollAmount < maxScroll ? 1 : 0 }}
           disabled={scrollAmount >= maxScroll}
         >
-          &gt;
+          <FontAwesomeIcon icon={faArrowRight} style={{fontSize:"13px"}}></FontAwesomeIcon>
         </button>
       </div>
     </div>
