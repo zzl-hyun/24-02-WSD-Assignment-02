@@ -1,22 +1,25 @@
 
 .app-header {
-    height: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 4%;
-    background-color: transparent;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: background-color 0.3s ease;
-  }
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 4%;
+  background-color: rgba(0, 0, 0, 0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
   
   .app-header:hover,
   .app-header.scrolled {
-    background-color: #141414;
+    /* background-color: #141414; */
+    background-color: rgba(0, 0, 0, 0);
   }
   
   .header-left,
@@ -26,11 +29,13 @@
   }
   
   .logo {
-    height: 30px;
-    margin-right: 25px;
-    justify-items: center;
-    align-items: center;
+    position: relative;
+    bottom: -5px;
+    width: 100px;
+    height: 100%;
+    margin-right: 30px;
   }
+  
   
   .nav-links ul {
     display: flex;
@@ -44,7 +49,6 @@
   }
   
   .nav-links a {
-    color: #e5e5e5;
     text-decoration: none;
     font-size: 0.85rem;
     transition: color 0.3s ease;
@@ -53,19 +57,7 @@
   .nav-links a:hover {
     color: #b3b3b3;
   }
-  
-  .icon-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    margin-left: 20px;
-    cursor: pointer;
-  }
-  
-  .icon-button:hover {
-    opacity: 0.5;
-  }
+
   
   .mobile-menu-button {
     display: none;
@@ -116,8 +108,69 @@
     cursor: pointer;
     
   }
+
+    
+  .icon-button {
+    background: none;
+    border: none !important; 
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-color: rgba(0, 0, 0, 0);
+  }
   
-  @media (max-width: 1440px) {
+  .icon-button:hover {
+    opacity: 0.5;
+  }
+
+  .language-button-wrapper {
+    position: relative;
+  }
+  
+  .language-button-wrapper {
+    position: relative;
+  }
+  
+  .language-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    font-size: 1.2rem;
+    margin-left: 20px;
+  }
+  
+  .language-icon {
+    font-size: 16px;
+    color: white;
+    transition: opacity 0.3s ease;
+  }
+  
+  .language-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .language-text.visible {
+    opacity: 1;
+  }
+  
+  .language-icon.hidden {
+    opacity: 0;
+  }
+  
+  
+  @media (max-width: 1500px) {
     .desktop-nav {
       display: none;
     }

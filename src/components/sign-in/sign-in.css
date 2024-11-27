@@ -66,8 +66,7 @@
     flex-direction: column;
     justify-content: flex-start;
   }
-  
-  
+
   @media (max-height: 600px) {
     #phone {
       transform: translate(-50%, -50%) scale(0.5); /* Scale down on small screens */
@@ -125,7 +124,7 @@
     border-radius:50px;
     border:none;
     width:100%;
-    background-color: #2069ff;
+    background-color: rgb(229, 9, 20);
     color:#fff;
     padding:17px;
     text-transform:uppercase;
@@ -137,6 +136,14 @@
   .signin-button:hover {
     box-shadow: 0px 2px 10px rgba(23,83,209,0.4)
   }
+  button:disabled {
+    background-color: #ccc; /* 비활성화 상태의 배경색 */
+    color: #666; /* 비활성화 상태의 텍스트 색 */
+    cursor: not-allowed; /* 비활성화 상태의 커서 */
+    opacity: 0.5; /* 투명도 조정 */
+    border: 1px solid #aaa; /* 비활성화 상태의 테두리 색 */
+  }
+  
   
   .input {
     position: relative;
@@ -322,8 +329,8 @@
   }
   
   .card.hidden {
-    background-color:#2069ff;
-    box-shadow: 0px 20px 40px rgba(23,83,209,0.8);
+    background-color:#494d53ab;
+    box-shadow: 0px 20px 40px rgba(339,16,19,0.4);
     padding:0px 30px 0px 30px;
   }
   
@@ -358,6 +365,10 @@
   .active > label {
     color: rgba(0, 0, 0, 0);
   }
+
+.navLinks ul, li{
+  list-style: none;
+}
   
   @keyframes register-swap {
     0% {transform: translate(0%, 0%)}

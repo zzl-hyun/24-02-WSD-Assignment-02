@@ -1,0 +1,21 @@
+{
+  "header":{
+      "home": "Home",
+      "popular": "Popular",
+      "wishlist": "Wishlist",
+      "search": "Search"
+  },
+  "movies":{
+      "popularMovie": "Popular",
+      "newMovie": "New Release",
+      "topRateMovie": "Top Rated",
+      "actionMovie": "Action",
+      "comedyMovie": "Comedy",
+      "familyMovie": "Family",
+      "animation": "Animation",
+      "documentary": "Documentary",
+      "drama": "Drama",
+      "releaseDate": "Date",
+      "rate": "Rate"
+  }
+}

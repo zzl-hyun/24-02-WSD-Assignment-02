@@ -3,6 +3,8 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-wrap: wrap; /* 모바일에서 줄바꿈을 허용 */
+
   }
   
   .customSelect {
@@ -14,7 +16,7 @@
   .selectSelected {
     background-color: black;
     color: white;
-    padding: 10px;
+    padding: 5px;
     border: 1px solid #fff;
     font-size: 16px;
     cursor: pointer;
@@ -23,17 +25,19 @@
   .selectItems {
     display: block;
     position: absolute;
-    background-color: #333;
+    background-color: rgba(0, 0, 0, .9);
     border: 1px solid #fff;
     z-index: 99;
     top: 100%;
     left: 0;
     right: 0;
+    line-height: 24px;
+    font-size: 14px;
   }
   
   .selectItems div {
     color: white;
-    padding: 10px;
+    padding: 3px;
     cursor: pointer;
   }
   
@@ -63,7 +67,7 @@
     min-width: 120px;
     background-color: black;
     color: white;
-    padding: 10px;
+    padding: 7px;
     border: 1px solid #fff;
     font-size: 16px;
     cursor: pointer;
@@ -74,4 +78,29 @@
   .clearOptions:hover {
     background-color: #333;
   }
+  @media (max-width: 1500px) {
+    .dropdownContainer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
   
+    .customSelect {
+      width: 100%;
+    }
+  
+    .selectSelected {
+      font-size: 14px;
+      padding: 10px;
+    }
+  
+    .selectItems {
+      font-size: 12px;
+    }
+  
+    .clearOptions {
+      width: 100%;
+      font-size: 14px;
+      padding: 10px;
+    }
+  }

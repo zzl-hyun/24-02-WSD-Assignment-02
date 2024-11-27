@@ -1,0 +1,21 @@
+{
+    "header":{
+        "home": "홈",
+        "popular": "대세 콘텐츠",
+        "wishlist": "찜한 리스트",
+        "search": "찾아보기"
+    },
+    "movies":{
+        "popularMovie": "인기",
+        "newMovie": "최신",
+        "topRateMovie": "최고 평점",
+        "actionMovie": "액션",
+        "comedyMovie": "코미디",
+        "familyMovie": "화목한",
+        "animation": "애니매이션",
+        "documentary": "다큐",
+        "drama": "드라마",
+        "releaseDate": "개봉일",
+        "rate": "평점"
+    }
+}

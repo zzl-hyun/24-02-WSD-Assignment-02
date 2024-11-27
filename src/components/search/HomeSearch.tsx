@@ -1,10 +1,10 @@
 // src/components/search/HomeSearch.tsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MovieSearch from '../../views/search/MovieSearch';
 import MovieInfiniteScroll from '../../views/views/MovieInfiniteScroll';
 import { SearchOptions } from '../../models/types';
 import styles from './HomeSearch.module.css';
+import { setCache, getCache } from '../../util/cache/movieCache';
 
 const HomeSearch: React.FC = () => {
   const apiKey = localStorage.getItem('TMDb-Key') || '';
@@ -19,9 +19,23 @@ const HomeSearch: React.FC = () => {
     Comedy: '35',
     Crime: '80',
     Family: '10751',
+    Animation: '16',
+    Documentary: '99',
+    Drama: '18',
+    Fantasy: '14',
+    History: '36',
+    Horror: '27',
+    Music: '10402',
+    Mystery: '9648',
+    Romance: '10749',
+    ScienceFiction: '878',
+    TVMovie: '10770',
+    Thriller: '53',
+    War: '10752',
+    Western: '37',
   };
   
-  const ageCode: Record<string, number> = {
+  const voteCode: Record<string, number> = {
     '평점 (전체)': -1,
     '9~10': 9,
     '8~9': 8,
@@ -37,17 +51,34 @@ const HomeSearch: React.FC = () => {
     영어: 'en',
     한국어: 'ko',
   };
-  
+
   const changeOptions = (options: SearchOptions) => {
-    const newGenreId = genreCode[options.originalLanguage] || '0';
-    const newAgeId = ageCode[options.translationLanguage] || -1;
-    const newSortId = sortingCode[options.sorting] || 'all';
+    const newGenreId = genreCode[options.genre] || '0';
+    const newAgeId = voteCode[options.vote_average] || -1;
+    const newSortId = sortingCode[options.originalLanguage];
   
     setGenreId(newGenreId);
     setAgeId(newAgeId);
     setSortId(newSortId);
-    console.log("Sorting:", sortingCode[options.sorting]);
-};
+    console.log("genre age sort", genreId, ageId, sortId);
+  };
+
+  useEffect(() => {
+    setCache('genreCode', genreId, 3600000); // Cache for 1 hour
+    setCache('voteCode', ageId, 3600000); // Cache for 1 hour
+    setCache('sortingCode', sortId, 3600000); // Cache for 1 hour
+  }, [genreId, ageId, sortId]);
+  
+  useEffect(() => {
+    const cachedGenreCode = getCache('genreCode');
+    const cachedvoteCode = getCache('voteCode');
+    const cachedSortingCode = getCache('sortingCode');
+
+    if (cachedGenreCode) setGenreId(cachedGenreCode);
+    if (cachedvoteCode) setAgeId(cachedvoteCode);
+    if (cachedSortingCode) setSortId(cachedSortingCode);
+  }, []);
+
 
 
   return (

@@ -1,6 +1,4 @@
-// src/views/home-wishlist/MovieWishlist.tsx
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useWishlistService } from '../../util/movie/wishlist';
 import { Movie } from '../../models/types';
 import styles from './MovieWishlist.module.css';
@@ -15,8 +13,7 @@ const MovieWishlist: React.FC = () => {
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Set up responsive layout and initial visible movies
-    handleResize();
+    handleResize(); // Initialize layout on first load
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -28,23 +25,36 @@ const MovieWishlist: React.FC = () => {
     updateVisibleMovies();
   }, [wishlist, currentPage, rowSize, moviesPerPage]);
 
-  const getImageUrl = (path: string) => (path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg');
-
-  const calculateLayout = () => {
-    if (gridContainerRef.current) {
-      const containerWidth = gridContainerRef.current.offsetWidth;
-      const movieCardWidth = isMobile ? 90 : 220;
-      const horizontalGap = isMobile ? 10 : 15;
-
-      setRowSize(Math.floor(containerWidth / (movieCardWidth + horizontalGap)));
-      setMoviesPerPage(rowSize * Math.floor(window.innerHeight / 330));
-    }
-  };
-
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     setIsMobile(window.innerWidth <= 768);
     calculateLayout();
-  };
+  }, []);
+
+  const calculateLayout = useCallback(() => {
+    if (gridContainerRef.current) {
+      const container = gridContainerRef.current;
+      const containerWidth = container.offsetWidth;
+      const containerHeight = window.innerHeight - container.offsetTop;
+      const movieCardWidth = isMobile ? 90 : 200;
+      const movieCardHeight = isMobile ? 150 : 220;
+      const horizontalGap = isMobile ? 10 : 15;
+      const verticalGap = -10;
+
+      const newRowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
+      const maxRows = Math.floor(containerHeight / (movieCardHeight + verticalGap));
+      const newMoviesPerPage = newRowSize * maxRows;
+
+      setRowSize(newRowSize);
+      setMoviesPerPage(newMoviesPerPage);
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (currentPage > Math.ceil(wishlist.length / moviesPerPage)) {
+      setCurrentPage(1); // Reset to page 1 if pages reduce
+    }
+  }, [moviesPerPage, wishlist.length]);
+  
 
   const updateVisibleMovies = () => {
     const startIndex = (currentPage - 1) * moviesPerPage;
@@ -78,9 +88,9 @@ const MovieWishlist: React.FC = () => {
           <div key={i} className={`${styles.movieRow} ${movieGroup.length === rowSize ? styles.full : ''}`}>
             {movieGroup.map((movie) => (
               <div key={movie.id} className={styles.movieCard} onClick={() => toggleWishlist(movie)}>
-                <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
+                <img src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`} alt={movie.title} />
                 <div className={styles.movieTitle}>{movie.title}</div>
-                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>👍</div>}
+                {isInWishlist(movie.id) && <div className={styles.wishlistIndicator}>❤️</div>}
               </div>
             ))}
           </div>

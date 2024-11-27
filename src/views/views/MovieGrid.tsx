@@ -16,9 +16,9 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
   const [moviesPerPage, setMoviesPerPage] = useState(20);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  // const wishlistService = new WishlistService();
-  const { wishlist, toggleWishlist, isInWishlist} = useWishlistService();
-  
+  const { toggleWishlist, isInWishlist } = useWishlistService();
+
+ 
 
   const fetchMovies = async () => {
     try {
@@ -37,7 +37,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
       }
 
       setMovies(allMovies.slice(0, totalMoviesNeeded));
-      calculateLayout(); // Adjust layout after setting movies
+      calculateLayout();
     } catch (error) {
       console.error('Error fetching movies:', error);
     }
@@ -76,6 +76,12 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
     }
   }, [isMobile]);
 
+  useEffect(() => {
+    if (currentPage > Math.ceil(movies.length / moviesPerPage)) {
+      setCurrentPage(1); // Reset to page 1 if pages reduce
+    }
+  }, [moviesPerPage, movies.length]);
+  
   const visibleMovieGroups = useCallback(() => {
     const startIndex = (currentPage - 1) * moviesPerPage;
     const endIndex = startIndex + moviesPerPage;
@@ -123,7 +129,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
                 />
                 <div className={styles.movieTitle}>{movie.title}</div>
                 {isInWishlist(movie.id) && (
-                  <div className={styles.wishlistIndicator}>👍</div>
+                  <div className={styles.wishlistIndicator}>❤️</div>
                 )}
               </div>
             ))}
@@ -131,13 +137,13 @@ const MovieGrid: React.FC<MovieGridProps> = ({ fetchUrl }) => {
         ))}
       </div>
       <div className={styles.pagination}>
-        <button onClick={prevPage} disabled={currentPage === 1}>
+        <button onClick={prevPage} disabled={currentPage <= 1}>
           &lt; 이전
         </button>
         <span>
           {currentPage} / {Math.ceil(movies.length / moviesPerPage)}
         </span>
-        <button onClick={nextPage} disabled={currentPage === Math.ceil(movies.length / moviesPerPage)}>
+        <button onClick={nextPage} disabled={currentPage >= Math.ceil(movies.length / moviesPerPage)}>
           다음 &gt;
         </button>
       </div>

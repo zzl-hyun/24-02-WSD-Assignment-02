@@ -1,0 +1,35 @@
+.footer {
+  background: linear-gradient(180deg, rgb(0 0 0 / 24%) 10%, rgb(39 39 39 / 45%) 100%);
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+  
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .navLinks {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .navLinks li {
+    display: inline;
+  }
+  
+  .navLinks a {
+    color: #e5e5e5;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .navLinks a:hover {
+    color: #b3b3b3;
+  }
