@@ -27,7 +27,7 @@ React.js 또는 Vue.js를 활용해 Single Page Application (SPA)를 개발하�
 ## 설치 및 실행 가이드
 1. 레포지토리 클론
 ~~~
-git clone [https://github.com/username/repo-name.git](https://github.com/zzl-hyun/24-02-WSD-Assignment-02.git)
+git clone https://github.com/zzl-hyun/24-02-WSD-Assignment-02.git
 ~~~
 2. 의존성 설치
 ~~~
