@@ -15,6 +15,11 @@ interface AuthState {
   loginSuccess: boolean;
   errorMessage: string | null;
   kakaoAccessToken: string | null;
+  kakaoUserInfo: {
+    id: number | null;
+    nickname: string | null;
+    profileImage: string | null;
+  } | null;
 }
 
 const initialState: AuthState = {
@@ -29,6 +34,7 @@ const initialState: AuthState = {
   loginSuccess: false,
   errorMessage: null,
   kakaoAccessToken: null,
+  kakaoUserInfo: null,
 };
 
 
@@ -84,6 +90,29 @@ export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async 
   const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=${state}`;
   window.location.href = kakaoAuthUrl;
 });
+
+export const fetchKakaoUserInfo = createAsyncThunk(
+  'auth/fetchKakaoUserInfo',
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState() as { auth: AuthState };
+    const accessToken = state.auth.kakaoAccessToken;
+
+    if (!accessToken) {
+      return rejectWithValue('Access token is missing');
+    }
+
+    try {
+      const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response.data; // 사용자 정보 반환
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user info');
+    }
+  }
+);
 
 export const setRememberUser = createAsyncThunk(
   'auth/setRememberMe',
@@ -168,6 +197,17 @@ const authSlice = createSlice({
       })
       .addCase(fetchKakaoAccessToken.rejected, (state, action) => {
         state.isAuthenticated = false;
+        state.errorMessage = action.payload as string;
+      })
+      .addCase(fetchKakaoUserInfo.fulfilled, (state, action: PayloadAction<any>) => {
+        state.kakaoUserInfo = {
+          id: action.payload.id,
+          nickname: action.payload.properties?.nickname || null,
+          profileImage: action.payload.properties?.profile_image || null,
+        };
+        state.errorMessage = null;
+      })
+      .addCase(fetchKakaoUserInfo.rejected, (state, action) => {
         state.errorMessage = action.payload as string;
       });
   },
