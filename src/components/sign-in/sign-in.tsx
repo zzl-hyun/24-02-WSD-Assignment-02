@@ -13,7 +13,9 @@ import {
   setRememberUser,
   setAcceptTerms,
   registerUser,
-  tryLogin
+  tryLogin,
+  handleKakaoLogin,
+  fetchKakaoAccessToken,
 } from '../../redux/slices/authSlice';
 import {
   motion,
@@ -68,7 +70,6 @@ const SignIn: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     if (!isLoginFormValid) {
       return toast.warn("Please enter a valid email and password");
     }
@@ -97,7 +98,26 @@ const SignIn: React.FC = () => {
   };
   
 
-  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code'); // 카카오에서 전달된 인가 코드
+    if (code) {
+      dispatch(fetchKakaoAccessToken(code))
+        .then(() => {
+          toast.success('Kakao 로그인 성공!');
+          localStorage.setItem('isAuthenticated', 'true');
+          // sessionStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('currentUser', email);
+          navigate('/');
+        })
+        .catch(() => {
+          toast.error('Kakao 로그인 실패!');
+        });
+            // URL에서 `code` 파라미터 제거
+    const newUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [dispatch, navigate]);
 
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -168,6 +188,7 @@ const SignIn: React.FC = () => {
   //   logoAnimationSequence(logoControls, boxControls);
   // }, [logoControls, boxControls]);
 
+  
   return (
     <div className='sign-in-page'>
       <div className="bg-image"></div>
@@ -265,6 +286,12 @@ const SignIn: React.FC = () => {
                   
                   <span id='signup' >Already have an account? <b>Sign in</b></span>
                 </a>
+                <img 
+                src={require('../../asset/image/kakao_login_medium_narrow.png')} 
+                alt='Kakao login' 
+                onClick={()=>dispatch(handleKakaoLogin())}
+                style={{cursor:'pointer'}}/>
+
               </div>
               {/* register form */}
               <div className={`card ${isLoginVisible ? 'hidden' : ''}`} id="register">

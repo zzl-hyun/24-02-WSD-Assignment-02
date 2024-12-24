@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import AuthService from '../../util/auth/authService';
-
+import axios from 'axios';
 interface AuthState {
   email: string;
   password: string;
@@ -14,6 +14,7 @@ interface AuthState {
   isAuthenticated: boolean;
   loginSuccess: boolean;
   errorMessage: string | null;
+  kakaoAccessToken: string | null;
 }
 
 const initialState: AuthState = {
@@ -27,23 +28,9 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loginSuccess: false,
   errorMessage: null,
+  kakaoAccessToken: null,
 };
 
-// export const tryLogin = createAsyncThunk(
-//   'auth/tryLogin',
-//   async ({ email, password }: { email: string; password: string }, { dispatch, rejectWithValue }) => {
-//     try {
-//       console.log("Attempting login..."); // Debug log
-//       await AuthService.tryLogin(email, password);
-//       console.log("Login successful, dispatching setLoginSuccess(true)"); // Debug log
-//       dispatch(setLoginSuccess(true)); // Ensure this is executed
-//       return { email };
-//     } catch (error: any) {
-//       console.error("Login failed:", error.message); // Debug log for error
-//       return rejectWithValue(error.message || 'Login failed');
-//     }
-//   }
-// );
 
 export const tryLogin = createAsyncThunk(
   'auth/tryLogin',
@@ -57,6 +44,39 @@ export const tryLogin = createAsyncThunk(
   }
 );
 
+
+export const fetchKakaoAccessToken = createAsyncThunk(
+  'auth/fetchKakaoAccessToken',
+  async (code: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('https://kauth.kakao.com/oauth/token', null, {
+        params: {
+          grant_type: 'authorization_code',
+          client_id: '5fee0a98cfbc9f7d1aabef5b1d93ad9b', // Kakao App 키
+          redirect_uri: 'http://localhost:3000/signin',
+          code,
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      const { access_token } = response.data;
+      localStorage.setItem('kakao_access_token', access_token);
+
+      return access_token;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Kakao login failed');
+    }
+  }
+);
+
+export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async () => {
+  const clientId = '5fee0a98cfbc9f7d1aabef5b1d93ad9b';
+  const redirectUri = 'http://localhost:3000/signin';
+  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+  window.location.href = kakaoAuthUrl;
+});
+
 export const setRememberUser = createAsyncThunk(
   'auth/setRememberMe',
   async ({ email, password, rememberMe }: { email: string; password: string; rememberMe: boolean }) => {
@@ -64,7 +84,6 @@ export const setRememberUser = createAsyncThunk(
   }
 );
 
-// Async thunk for registering a user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
@@ -76,6 +95,7 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
+
 
 const authSlice = createSlice({
   name: 'auth',
@@ -132,9 +152,19 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.errorMessage = action.payload as string;
+      })
+      .addCase(fetchKakaoAccessToken.fulfilled, (state, action: PayloadAction<string>) => {
+        state.isAuthenticated = true;
+        state.kakaoAccessToken = action.payload;
+        state.errorMessage = null;
+      })
+      .addCase(fetchKakaoAccessToken.rejected, (state, action) => {
+        state.isAuthenticated = false;
+        state.errorMessage = action.payload as string;
       });
   },
 });
+
 
 export const {
     setEmail,
