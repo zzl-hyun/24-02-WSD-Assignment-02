@@ -5,10 +5,7 @@ declare namespace NodeJS {
         REACT_APP_TMDB_API_KEY: string;
         REACT_APP_KAKAO_CLIENT_ID: string;
         REACT_APP_KAKAO_ADMIN: string;
-<<<<<<< HEAD
-=======
         REACT_APP_REDIRECT_URL: string;
->>>>>>> dev
     }
   }
   
