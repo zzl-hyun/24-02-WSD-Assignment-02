@@ -21,6 +21,9 @@ jobs:
         run: npm install
 
       - name: Build project
+        env:
+          REACT_APP_TMDB_API_KEY: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_KAKAO_CLIENT_ID: ${{ secrets.REACT_APP_KAKAO_CLIENT_ID }}
         run: npm run build
         
       - name: Deploy to GitHub Pages
