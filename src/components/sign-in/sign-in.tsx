@@ -16,6 +16,7 @@ import {
   tryLogin,
   handleKakaoLogin,
   fetchKakaoAccessToken,
+  fetchKakaoUserInfo,
 } from '../../redux/slices/authSlice';
 import {
   motion,
@@ -103,21 +104,28 @@ const SignIn: React.FC = () => {
     const code = urlParams.get('code'); // 카카오에서 전달된 인가 코드
     if (code) {
       dispatch(fetchKakaoAccessToken(code))
-        .then(() => {
-          toast.success('Kakao 로그인 성공!');
-          localStorage.setItem('isAuthenticated', 'true');
-          // sessionStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('currentUser', email);
-          navigate('/');
+        .then((action) => {
+          if (fetchKakaoAccessToken.fulfilled.match(action)) {
+            dispatch(fetchKakaoUserInfo())
+              .then(() => {
+                localStorage.setItem('isAuthenticated', 'true');
+                toast.success('Kakao 로그인 성공!');
+                navigate('/');
+              });
+          } else {
+            toast.error('Kakao 로그인 실패!');
+          }
         })
         .catch(() => {
           toast.error('Kakao 로그인 실패!');
         });
-            // URL에서 `code` 파라미터 제거
-    const newUrl = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, document.title, newUrl);
+  
+      // URL에서 `code` 파라미터 제거
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
   }, [dispatch, navigate]);
+  
 
 
   const handleRegister = async (e: React.FormEvent) => {

@@ -5,23 +5,23 @@ import { faUser, faTicket, faBars, faTimes, faRightFromBracket, faGlobe, faMoon,
 import AuthService from '../../util/auth/authService';
 import {
   motion,
-  useScroll,
-  useAnimation,
-  AnimatePresence,
 } from "framer-motion";
 import './Header.css';
 import i18n from '../../locales/i18n';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light'); // 기본 테마 상태
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark'); // 기본 테마 상태
   const [isMobile, setIsMobile] = useState(false);
   const [showLangTooltip, setShowLangTooltip] = useState(false); // 언어 상태 표시
   const navigate = useNavigate();
   const {t} = useTranslation();
-  
+  const kakaoUserInfo = useSelector((state: RootState) => state.auth.kakaoUserInfo);
+
   const logoVariants = {
     start: {
       pathLength: 0,
@@ -120,7 +120,14 @@ const Header: React.FC = () => {
 
         <div className="header-right">
           {/* user */}
-          <span style={{color:'white'}}><b>{user}  </b></span>
+
+          {kakaoUserInfo?.nickname ? (
+            <span style={{ color: 'white' }}>
+              <b>{kakaoUserInfo.nickname}</b>
+            </span>
+          ):(
+          <span style={{color:'white'}}><b>{user} </b></span>
+          )}
           
           {/* lang */}
           <div className="language-button-wrapper">
