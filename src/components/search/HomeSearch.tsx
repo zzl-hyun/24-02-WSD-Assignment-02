@@ -7,7 +7,9 @@ import styles from './HomeSearch.module.css';
 import { setCache, getCache } from '../../util/cache/movieCache';
 
 const HomeSearch: React.FC = () => {
-  const apiKey = localStorage.getItem('TMDb-Key') || '';
+  // const apiKey = localStorage.getItem('TMDb-Key') || '';
+  const apiKey = process.env.REACT_APP_TMDB_API_KEY;
+
   const [genreId, setGenreId] = useState('0');
   const [ageId, setAgeId] = useState(-1);
   const [sortId, setSortId] = useState('all');
