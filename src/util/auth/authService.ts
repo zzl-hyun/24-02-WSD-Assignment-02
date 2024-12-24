@@ -1,5 +1,5 @@
 // src/util/auth/authService.ts
-
+import axios from "axios";
 export default class AuthService {
 
   static async tryLogin(email: string, password: string, saveToken = true): Promise<any> {
@@ -23,7 +23,7 @@ export default class AuthService {
         reject(new Error('Login failed'));
       }
     });
-  }
+  };
   
   static setRememberUser(email: string, password: string, rememberMe: boolean) {
     if (rememberMe) {
@@ -31,7 +31,7 @@ export default class AuthService {
     } else {
       localStorage.removeItem('rememberUser');
     }
-  }
+  };
 
   static async tryRegister(email: string, password: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -51,27 +51,41 @@ export default class AuthService {
         reject(err);
       }
     });
-  }
+  };
   
+  static async logout(): Promise<void> {
+    const accessToken = localStorage.getItem("kakao_access_token");
 
+    if (accessToken) {
+      try {
+        // 카카오 API에 로그아웃 요청
+        const response = await axios.post(
+          "https://kapi.kakao.com/v1/user/logout",
+          {},
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log("Kakao logout successful:", response.data);
+            // URL 정리
+        const newUrl = window.location.origin + '/signin';
+        window.history.replaceState({}, document.title, newUrl);
+      } catch (error) {
+        console.error("Kakao logout failed:", error);
+      }
+    }
 
-  static logout(): void {
-    localStorage.removeItem('TMDb-Key');
-    localStorage.removeItem('isAuthenticated');
-    // sessionStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('currentUser');
-  }
-  // static async socialLogin(provider: string, token: string): Promise<any> {
-  //   // 소셜 로그인 API 호출 로직 구현
-  //   return new Promise((resolve, reject) => {
-  //     // 예시 코드 (실제 API 호출 대체)
-  //     if (provider && token) {
-  //       console.log(`Social login with ${provider}`);
-  //       resolve({ email: "socialuser@example.com", token });
-  //     } else {
-  //       reject(new Error('Social login failed'));
-  //     }
-  //   });
-  // }
+    // 클라이언트 측 로컬스토리지 정리
+    localStorage.removeItem("TMDb-Key");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("kakao_access_token");
+    sessionStorage.clear();
+  };
+
+  
 }
 
