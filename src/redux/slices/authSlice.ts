@@ -44,6 +44,7 @@ export const tryLogin = createAsyncThunk(
   }
 );
 
+const apiKey = process.env.REACT_APP_TMDB_API_KEY;
 
 export const fetchKakaoAccessToken = createAsyncThunk(
   'auth/fetchKakaoAccessToken',
@@ -52,8 +53,8 @@ export const fetchKakaoAccessToken = createAsyncThunk(
       const response = await axios.post('https://kauth.kakao.com/oauth/token', null, {
         params: {
           grant_type: 'authorization_code',
-          client_id: '5fee0a98cfbc9f7d1aabef5b1d93ad9b', // Kakao App 키
-          redirect_uri: 'http://localhost:3000/signin',
+          client_id: process.env.REACT_APP_KAKAO_CLIENT_ID, // Kakao App 키
+          redirect_uri: process.env.REACT_APP_REDIRECT_URL,
           code,
         },
         headers: {
@@ -71,8 +72,8 @@ export const fetchKakaoAccessToken = createAsyncThunk(
 );
 
 export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async () => {
-  const clientId = '5fee0a98cfbc9f7d1aabef5b1d93ad9b';
-  const redirectUri = 'http://localhost:3000/signin';
+  const clientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
+  const redirectUri = process.env.REACT_APP_REDIRECT_URL;
   const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
   window.location.href = kakaoAuthUrl;
 });
