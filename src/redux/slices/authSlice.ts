@@ -44,7 +44,6 @@ export const tryLogin = createAsyncThunk(
   }
 );
 
-const apiKey = process.env.REACT_APP_TMDB_API_KEY;
 
 export const fetchKakaoAccessToken = createAsyncThunk(
   'auth/fetchKakaoAccessToken',
@@ -64,6 +63,13 @@ export const fetchKakaoAccessToken = createAsyncThunk(
       const { access_token } = response.data;
       localStorage.setItem('kakao_access_token', access_token);
 
+            // Redirect 후 state 값 확인
+      const urlParams = new URLSearchParams(window.location.search);
+      const state = urlParams.get('state');
+      if (state === 'signin') {
+        window.location.href = `${process.env.REACT_APP_REDIRECT_URL}#/signin`; // 리다이렉트 처리
+      }
+      
       return access_token;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Kakao login failed');
@@ -74,7 +80,8 @@ export const fetchKakaoAccessToken = createAsyncThunk(
 export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async () => {
   const clientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
   const redirectUri = process.env.REACT_APP_REDIRECT_URL;
-  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+  const state= 'signin';
+  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=${state}`;
   window.location.href = kakaoAuthUrl;
 });
 
