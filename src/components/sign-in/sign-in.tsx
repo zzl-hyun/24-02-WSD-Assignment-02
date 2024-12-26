@@ -13,7 +13,10 @@ import {
   setRememberUser,
   setAcceptTerms,
   registerUser,
-  tryLogin
+  tryLogin,
+  handleKakaoLogin,
+  fetchKakaoAccessToken,
+  fetchKakaoUserInfo,
 } from '../../redux/slices/authSlice';
 import {
   motion,
@@ -68,7 +71,6 @@ const SignIn: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     if (!isLoginFormValid) {
       return toast.warn("Please enter a valid email and password");
     }
@@ -99,6 +101,33 @@ const SignIn: React.FC = () => {
   };
   
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code'); // 카카오에서 전달된 인가 코드
+    if (code) {
+      dispatch(fetchKakaoAccessToken(code))
+        .then((action) => {
+          if (fetchKakaoAccessToken.fulfilled.match(action)) {
+            dispatch(fetchKakaoUserInfo())
+              .then(() => {
+                // localStorage.setItem('isAuthenticated', 'true');
+                sessionStorage.setItem('isAuthenticated', 'true');
+                toast.success('Kakao 로그인 성공!');
+                navigate('/');
+              });
+          } else {
+            toast.error('Kakao 로그인 실패!');
+          }
+        })
+        .catch(() => {
+          toast.error('Kakao 로그인 실패!');
+        });
+  
+      // URL에서 `code` 파라미터 제거
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [dispatch, navigate]);
   
 
 
@@ -178,6 +207,7 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
   //   logoAnimationSequence(logoControls, boxControls);
   // }, [logoControls, boxControls]);
 
+  
   return (
     <div className='sign-in-page'>
       <div className="bg-image"></div>
@@ -277,6 +307,11 @@ const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
                 <a href="javascript:void(0)" className="account-check" onClick={toggleCard}>
                   <span id='signup' >Already have an account? <b>Sign in</b></span>
                 </a>
+                <img 
+                src={require('../../asset/image/kakao_login_medium_narrow.png')} 
+                alt='Kakao login' 
+                onClick={()=>dispatch(handleKakaoLogin())}
+                style={{cursor:'pointer'}}/>
 
               </div>
               {/* register form */}

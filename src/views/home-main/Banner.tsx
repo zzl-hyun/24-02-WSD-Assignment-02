@@ -29,16 +29,17 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
       if (movie) {
         const cacheKey = `teaserKey_${i18n.language}_${movie.id}`; // movie.id를 기반으로 캐시 키 생성
         const cachedTeaserKey = getCache(cacheKey);
+        const apiKey = process.env.REACT_APP_TMDB_API_KEY;
 
         if (cachedTeaserKey) {
           // 캐시된 데이터가 있으면 바로 사용
-          console.log(`Using cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
+          // console.log(`Using cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
           setTeaserKey(cachedTeaserKey);
           return;
         }
 
         try {
-          const videos = await urlService.getVideos(localStorage.getItem('TMDb-Key') || '', movie.id);
+          const videos = await urlService.getVideos(apiKey, movie.id);
           // console.log('Fetched Videos:', videos); // 모든 비디오 출력
           const teaser = videos.find((video: any) => video.type === 'Trailer' && video.site.toLowerCase() === 'youtube');
           if (teaser) {

@@ -49,7 +49,7 @@ const fetchMovies = useCallback(async () => {
   const cachedMovies = getCache(cacheKey);
   if (cachedMovies) {
     setMovies(cachedMovies);
-    console.log("movieRow cache 발견")
+    // console.log("movieRow cache 발견")
     return;
   }
 

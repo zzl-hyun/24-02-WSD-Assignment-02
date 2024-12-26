@@ -15,7 +15,10 @@
     "@types/node": "^16.18.118",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "env-cmd": "^10.1.0",
     "framer-motion": "^11.11.17",
     "i18next": "^23.16.8",
     "react": "^18.3.1",
@@ -37,7 +40,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "dev": "env-cmd -f .env.dev react-scripts start",
+    "prod": "env-cmd -f .env.prod react-scripts start"
   },
   "eslintConfig": {
     "extends": [

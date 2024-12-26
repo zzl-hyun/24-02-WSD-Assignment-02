@@ -9,7 +9,9 @@ import './HomePopular.css';
 
 const HomePopular: React.FC = () => {
   const [currentView, setCurrentView] = useState<'grid' | 'list'>('grid');
-  const apiKey = localStorage.getItem('TMDb-Key') || '';
+  // const apiKey = localStorage.getItem('TMDb-Key') || '';
+    const apiKey = process.env.REACT_APP_TMDB_API_KEY;
+
   const urlService = new URLService();
 
   // useEffect(() => {

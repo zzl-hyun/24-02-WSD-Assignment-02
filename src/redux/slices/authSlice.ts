@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import AuthService from '../../util/auth/authService';
-
+import axios from 'axios';
 interface AuthState {
   email: string;
   password: string;
@@ -14,6 +14,11 @@ interface AuthState {
   isAuthenticated: boolean;
   loginSuccess: boolean;
   errorMessage: string | null;
+  kakaoUserInfo: {
+    id: number | null;
+    nickname: string | null;
+    profileImage: string | null;
+  } | null;
 }
 
 const initialState: AuthState = {
@@ -27,23 +32,9 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loginSuccess: false,
   errorMessage: null,
+  kakaoUserInfo: null,
 };
 
-// export const tryLogin = createAsyncThunk(
-//   'auth/tryLogin',
-//   async ({ email, password }: { email: string; password: string }, { dispatch, rejectWithValue }) => {
-//     try {
-//       console.log("Attempting login..."); // Debug log
-//       await AuthService.tryLogin(email, password);
-//       console.log("Login successful, dispatching setLoginSuccess(true)"); // Debug log
-//       dispatch(setLoginSuccess(true)); // Ensure this is executed
-//       return { email };
-//     } catch (error: any) {
-//       console.error("Login failed:", error.message); // Debug log for error
-//       return rejectWithValue(error.message || 'Login failed');
-//     }
-//   }
-// );
 
 export const tryLogin = createAsyncThunk(
   'auth/tryLogin',
@@ -64,7 +55,6 @@ export const setRememberUser = createAsyncThunk(
   }
 );
 
-// Async thunk for registering a user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
@@ -73,6 +63,48 @@ export const registerUser = createAsyncThunk(
       return { email };
     } catch (error: any) {
       return rejectWithValue(error.message || 'Registration failed');
+    }
+  }
+);
+
+export const fetchKakaoAccessToken = createAsyncThunk('auth/fetchKakaoAccessToken', async (code: string, { rejectWithValue }) => {
+    try {
+      const access_token = await AuthService.fetchKakaoToken(code);
+
+      // localStorage.setItem('kakao_access_token', access_token);
+      sessionStorage.setItem('kakao_access_token', access_token);
+
+            // Redirect 후 state 값 확인
+      const urlParams = new URLSearchParams(window.location.search);
+      const state = urlParams.get('state');
+      if (state === 'signin') {
+        window.location.href = `${process.env.REACT_APP_REDIRECT_URL}#/signin`; // 리다이렉트 처리
+      }
+      
+      return access_token;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Kakao login failed');
+    }
+  }
+);
+
+export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async () => {
+  AuthService.handleKakaoRedirect();
+});
+
+export const fetchKakaoUserInfo = createAsyncThunk('auth/fetchKakaoUserInfo', async (_, { rejectWithValue }) => {
+    // const accessToken = state.auth.kakaoAccessToken;
+    const accessToken = sessionStorage.getItem('kakao_access_token');
+
+    if (!accessToken) {
+      return rejectWithValue('Access token is missing');
+    }
+
+    try {
+      const userInfo = await AuthService.fetchKakaoUserInfo(accessToken);
+      return userInfo; // 사용자 정보 반환
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to fetch user info');
     }
   }
 );
@@ -132,9 +164,29 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.errorMessage = action.payload as string;
+      })
+      .addCase(fetchKakaoAccessToken.fulfilled, (state, action: PayloadAction<string>) => {
+        state.isAuthenticated = true;
+        state.errorMessage = null;
+      })
+      .addCase(fetchKakaoAccessToken.rejected, (state, action) => {
+        state.isAuthenticated = false;
+        state.errorMessage = action.payload as string;
+      })
+      .addCase(fetchKakaoUserInfo.fulfilled, (state, action: PayloadAction<any>) => {
+        state.kakaoUserInfo = {
+          id: action.payload.id,
+          nickname: action.payload.properties?.nickname || null,
+          profileImage: action.payload.properties?.thumbnail_image || null,
+        };
+        state.errorMessage = null;
+      })
+      .addCase(fetchKakaoUserInfo.rejected, (state, action) => {
+        state.errorMessage = action.payload as string;
       });
   },
 });
+
 
 export const {
     setEmail,

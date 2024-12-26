@@ -26,7 +26,9 @@ const HomeMain: React.FC = () => {
   const [animationUrl, setAnimationUrl] = useState('')
   const [documentaryUrl, setDocumentaryUrl] = useState('')
   const [dramaUrl, setDramaUrl] = useState('')
-  const apiKey = localStorage.getItem('TMDb-Key') || '';
+  // const apiKey = localStorage.getItem('TMDb-Key') || '';
+  const apiKey = process.env.REACT_APP_TMDB_API_KEY;
+
   const urlService = useMemo(() => new URLService(), []);
   // const wishlistService = new WishlistService();
   const { t } = useTranslation();
