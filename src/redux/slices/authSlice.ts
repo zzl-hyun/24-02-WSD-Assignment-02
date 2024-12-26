@@ -67,7 +67,8 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const fetchKakaoAccessToken = createAsyncThunk('auth/fetchKakaoAccessToken', async (code: string, { rejectWithValue }) => {
+export const fetchKakaoAccessToken = createAsyncThunk(
+  'auth/fetchKakaoAccessToken', async (code: string, { rejectWithValue }) => {
     try {
       const access_token = await AuthService.fetchKakaoToken(code);
 
@@ -88,11 +89,13 @@ export const fetchKakaoAccessToken = createAsyncThunk('auth/fetchKakaoAccessToke
   }
 );
 
-export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async () => {
+export const handleKakaoLogin = createAsyncThunk(
+  'auth/handleKakaoLogin', async () => {
   AuthService.handleKakaoRedirect();
 });
 
-export const fetchKakaoUserInfo = createAsyncThunk('auth/fetchKakaoUserInfo', async (_, { rejectWithValue }) => {
+export const fetchKakaoUserInfo = createAsyncThunk(
+  'auth/fetchKakaoUserInfo', async (_, { rejectWithValue }) => {
     // const accessToken = state.auth.kakaoAccessToken;
     const accessToken = sessionStorage.getItem('kakao_access_token');
 

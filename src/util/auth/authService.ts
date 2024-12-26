@@ -1,7 +1,6 @@
 // src/util/auth/authService.ts
-import { rejects } from "assert";
 import axios from "axios";
-import { resolve } from "path";
+
 export default class AuthService {
 
   static async tryLogin(email: string, password: string, saveToken = true): Promise<any> {
@@ -97,7 +96,9 @@ export default class AuthService {
       });
       return response.data.access_token; // 성공 시 access_token 반환
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch Token');
+      const errorMessage = error.response?.data?.error_description || 'Failed to fetch token.';
+      console.error("Token fetch error:", errorMessage);
+      throw new Error(errorMessage);
     }
   }
   
@@ -108,10 +109,15 @@ export default class AuthService {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(JSON.stringify(response.data));
+
+      // console.log(JSON.stringify(response.data));
+
+      console.log('유저정보: ',response.data);
       return response.data; // 사용자 정보 반환
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch user info');
+      const errorMessage = error.response?.data?.message || '[Network issues]: Failed to fetch user info.';
+      console.error("User info fetch error:", errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
@@ -120,6 +126,7 @@ export default class AuthService {
     const redirectUri = process.env.REACT_APP_REDIRECT_URL;
     const state = 'signin';
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=${state}&scope=profile_image,friends`;
+                          
     window.location.href = kakaoAuthUrl;
   };
 }
