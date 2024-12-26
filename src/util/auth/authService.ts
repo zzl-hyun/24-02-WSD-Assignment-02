@@ -1,5 +1,7 @@
 // src/util/auth/authService.ts
+import { rejects } from "assert";
 import axios from "axios";
+import { resolve } from "path";
 export default class AuthService {
 
   static async tryLogin(email: string, password: string, saveToken = true): Promise<any> {
@@ -8,14 +10,7 @@ export default class AuthService {
       const user = users.find((user: any) => user.email === email && user.password === password);
   
       if (user) {
-        if (saveToken) {
-          localStorage.setItem('TMDb-Key', password);
-        } else {
-          sessionStorage.setItem('TMDb-Key', password);
-        }
-        console.log("User authenticated:", user); // Debug log
-        localStorage.setItem('isAuthenticated', 'true');
-        // sessionStorage.setItem('isAuthenticated', 'true');
+        sessionStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('currentUser', email);
         resolve(user);
       } else {
@@ -80,12 +75,51 @@ export default class AuthService {
 
     // 클라이언트 측 로컬스토리지 정리
     localStorage.removeItem("TMDb-Key");
-    localStorage.removeItem("isAuthenticated");
+    // localStorage.removeItem("isAuthenticated");
+    sessionStorage.removeItem("isAuthenticated");
     localStorage.removeItem("currentUser");
     localStorage.removeItem("kakao_access_token");
     sessionStorage.clear();
   };
 
+  static async fetchKakaoToken(code: string): Promise<string> {
+    try {
+      const response = await axios.post('https://kauth.kakao.com/oauth/token', null, {
+        params: {
+          grant_type: 'authorization_code',
+          client_id: process.env.REACT_APP_KAKAO_CLIENT_ID,
+          redirect_uri: process.env.REACT_APP_REDIRECT_URL,
+          code,
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      return response.data.access_token; // 성공 시 access_token 반환
+    } catch (err) {
+      throw err; // 에러 발생 시 호출자에게 전달
+    }
+  }
   
+  static async fetchKakaoUserInfo(accessToken: string): Promise<any> {
+    try {
+      const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response.data; // 사용자 정보 반환
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch user info');
+    }
+  };
+
+  static async handleKakaoRedirect(): Promise<void> {
+    const clientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
+    const redirectUri = process.env.REACT_APP_REDIRECT_URL;
+    const state = 'signin';
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=${state}&scope=profile_image,friends`;
+    window.location.href = kakaoAuthUrl;
+  };
 }
 
