@@ -57,11 +57,11 @@ const fetchMovies = useCallback(async () => {
   try {
     const response = await axios.get<APIResponse>(fetchUrl);
     const fetchedMovies = response.data.results || [];
-    console.log(fetchUrl)
+    // console.log(fetchUrl)
     setMovies(fetchedMovies);
     setCache(cacheKey, fetchedMovies, 3600000); // 1시간 동안 캐시 유지
 
-    console.log("movieRow fetch movies")
+    // console.log("movieRow fetch movies")
   } catch (error) {
     console.error('Error fetching movies:', error);
     setMovies([]);

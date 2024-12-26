@@ -45,7 +45,7 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
           if (teaser) {
             setTeaserKey(teaser.key);
             setCache(cacheKey, teaser.key, 3600000); // 1시간 캐시 유지
-            console.log(`Set cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
+            // console.log(`Set cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
 
           }
         } catch (error) {
