@@ -1,6 +1,7 @@
-# 24-02-WSD-Assignment-02
+# 24-02-WSD-Assignment-02, 04
 ## 프로젝트 기본 정보
-React.js 또는 Vue.js를 활용해 Single Page Application (SPA)를 개발하고, 이를 Github pages를 활용하여 정적 웹사이트 배포
+#### 02) React.js 또는 Vue.js를 활용해 Single Page Application (SPA)를 개발하고, 이를 Github pages를 활용하여 정적 웹사이트 배포
+#### 04) 카카오 로그인 구현
 
 
 ## 기술 스택
@@ -15,7 +16,8 @@ React.js 또는 Vue.js를 활용해 Single Page Application (SPA)를 개발하�
 ![i18next](https://img.shields.io/badge/i18next-v23.16.8-orange?style=for-the-badge&logo=i18next)
 ![React Font Awesome](https://img.shields.io/badge/react--fontawesome-v0.2.2-blue?style=for-the-badge&logo=font-awesome)
 ![React Player](https://img.shields.io/badge/react--player-v2.16.0-red?style=for-the-badge&logo=youtube)
-
+![Kakao](https://img.shields.io/badge/kakao-ffcd00.svg?style=for-the-badge&logo=kakao&logoColor=000000)
+![KakaoTalk](https://img.shields.io/badge/kakaotalk-ffcd00.svg?style=for-the-badge&logo=kakaotalk&logoColor=000000)
 
 
 ## 주요 기능
@@ -23,6 +25,11 @@ React.js 또는 Vue.js를 활용해 Single Page Application (SPA)를 개발하�
 2. Infinite Scroll 구현: 영화 목록의 무한 스크롤 기능.
 3. 다국어 지원: locales 디렉토리를 활용한 언어별 번역 관리.
 4. Redux를 활용한 상태 관리: 앱 상태 및 사용자 데이터를 효율적으로 관리.
+5. 카카오 로그인 구현
+6. 카카오 회원 정보 조회 구현
+7. 개발-배포 환경 분리
+
+
 
 ## 설치 및 실행 가이드
 1. 레포지토리 클론
