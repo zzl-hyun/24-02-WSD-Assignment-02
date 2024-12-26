@@ -48,10 +48,26 @@ export const tryLogin = createAsyncThunk(
   }
 );
 
+export const setRememberUser = createAsyncThunk(
+  'auth/setRememberMe',
+  async ({ email, password, rememberMe }: { email: string; password: string; rememberMe: boolean }) => {
+    AuthService.setRememberUser(email, password, rememberMe);
+  }
+);
 
-export const fetchKakaoAccessToken = createAsyncThunk(
-  'auth/fetchKakaoAccessToken',
-  async (code: string, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+    try {
+      await AuthService.tryRegister(email, password); // AuthService에서 처리
+      return { email };
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Registration failed');
+    }
+  }
+);
+
+export const fetchKakaoAccessToken = createAsyncThunk('auth/fetchKakaoAccessToken', async (code: string, { rejectWithValue }) => {
     try {
       const access_token = await AuthService.fetchKakaoToken(code);
 
@@ -76,9 +92,7 @@ export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async 
   AuthService.handleKakaoRedirect();
 });
 
-export const fetchKakaoUserInfo = createAsyncThunk(
-  'auth/fetchKakaoUserInfo',
-  async (_, { rejectWithValue }) => {
+export const fetchKakaoUserInfo = createAsyncThunk('auth/fetchKakaoUserInfo', async (_, { rejectWithValue }) => {
     // const accessToken = state.auth.kakaoAccessToken;
     const accessToken = sessionStorage.getItem('kakao_access_token');
 
@@ -94,26 +108,6 @@ export const fetchKakaoUserInfo = createAsyncThunk(
     }
   }
 );
-
-export const setRememberUser = createAsyncThunk(
-  'auth/setRememberMe',
-  async ({ email, password, rememberMe }: { email: string; password: string; rememberMe: boolean }) => {
-    AuthService.setRememberUser(email, password, rememberMe);
-  }
-);
-
-export const registerUser = createAsyncThunk(
-  'auth/registerUser',
-  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
-    try {
-      await AuthService.tryRegister(email, password); // AuthService에서 처리
-      return { email };
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Registration failed');
-    }
-  }
-);
-
 
 const authSlice = createSlice({
   name: 'auth',

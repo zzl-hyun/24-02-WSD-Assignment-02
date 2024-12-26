@@ -96,8 +96,8 @@ export default class AuthService {
         },
       });
       return response.data.access_token; // 성공 시 access_token 반환
-    } catch (err) {
-      throw err; // 에러 발생 시 호출자에게 전달
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch Token');
     }
   }
   
