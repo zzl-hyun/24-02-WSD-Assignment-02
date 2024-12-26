@@ -122,9 +122,12 @@ const Header: React.FC = () => {
           {/* user */}
 
           {kakaoUserInfo?.nickname ? (
+            <>
+            <img src={kakaoUserInfo.profileImage || ''} alt='profile' style={{width:'30px', borderRadius: '0.5rem', marginRight:'15px'}}></img>
             <span style={{ color: 'white' }}>
               <b>{kakaoUserInfo.nickname}</b>
             </span>
+            </>
           ):(
           <span style={{color:'white'}}><b>{user} </b></span>
           )}

@@ -108,6 +108,7 @@ export default class AuthService {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      console.log(JSON.stringify(response.data));
       return response.data; // 사용자 정보 반환
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch user info');
