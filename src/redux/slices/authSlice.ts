@@ -14,7 +14,6 @@ interface AuthState {
   isAuthenticated: boolean;
   loginSuccess: boolean;
   errorMessage: string | null;
-  kakaoAccessToken: string | null;
   kakaoUserInfo: {
     id: number | null;
     nickname: string | null;
@@ -33,7 +32,6 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loginSuccess: false,
   errorMessage: null,
-  kakaoAccessToken: null,
   kakaoUserInfo: null,
 };
 
@@ -175,7 +173,6 @@ const authSlice = createSlice({
       })
       .addCase(fetchKakaoAccessToken.fulfilled, (state, action: PayloadAction<string>) => {
         state.isAuthenticated = true;
-        state.kakaoAccessToken = action.payload;
         state.errorMessage = null;
       })
       .addCase(fetchKakaoAccessToken.rejected, (state, action) => {
@@ -186,7 +183,7 @@ const authSlice = createSlice({
         state.kakaoUserInfo = {
           id: action.payload.id,
           nickname: action.payload.properties?.nickname || null,
-          profileImage: action.payload.properties?.profile_image || null,
+          profileImage: action.payload.properties?.thumbnail_image || null,
         };
         state.errorMessage = null;
       })
