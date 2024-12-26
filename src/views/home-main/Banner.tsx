@@ -33,7 +33,7 @@ const Banner: React.FC<BannerProps> = ({ movie }) => {
 
         if (cachedTeaserKey) {
           // 캐시된 데이터가 있으면 바로 사용
-          console.log(`Using cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
+          // console.log(`Using cached teaserKey for movie ${movie.id}:`, cachedTeaserKey);
           setTeaserKey(cachedTeaserKey);
           return;
         }

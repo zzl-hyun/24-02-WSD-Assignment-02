@@ -55,19 +55,10 @@ export const fetchKakaoAccessToken = createAsyncThunk(
   'auth/fetchKakaoAccessToken',
   async (code: string, { rejectWithValue }) => {
     try {
-      const response = await axios.post('https://kauth.kakao.com/oauth/token', null, {
-        params: {
-          grant_type: 'authorization_code',
-          client_id: process.env.REACT_APP_KAKAO_CLIENT_ID, // Kakao App 키
-          redirect_uri: process.env.REACT_APP_REDIRECT_URL,
-          code,
-        },
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      });
-      const { access_token } = response.data;
-      localStorage.setItem('kakao_access_token', access_token);
+      const access_token = await AuthService.fetchKakaoToken(code);
+
+      // localStorage.setItem('kakao_access_token', access_token);
+      sessionStorage.setItem('kakao_access_token', access_token);
 
             // Redirect 후 state 값 확인
       const urlParams = new URLSearchParams(window.location.search);
@@ -84,32 +75,24 @@ export const fetchKakaoAccessToken = createAsyncThunk(
 );
 
 export const handleKakaoLogin = createAsyncThunk('auth/handleKakaoLogin', async () => {
-  const clientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
-  const redirectUri = process.env.REACT_APP_REDIRECT_URL;
-  const state= 'signin';
-  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=${state}`;
-  window.location.href = kakaoAuthUrl;
+  AuthService.handleKakaoRedirect();
 });
 
 export const fetchKakaoUserInfo = createAsyncThunk(
   'auth/fetchKakaoUserInfo',
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { auth: AuthState };
-    const accessToken = state.auth.kakaoAccessToken;
+  async (_, { rejectWithValue }) => {
+    // const accessToken = state.auth.kakaoAccessToken;
+    const accessToken = sessionStorage.getItem('kakao_access_token');
 
     if (!accessToken) {
       return rejectWithValue('Access token is missing');
     }
 
     try {
-      const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      return response.data; // 사용자 정보 반환
+      const userInfo = await AuthService.fetchKakaoUserInfo(accessToken);
+      return userInfo; // 사용자 정보 반환
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user info');
+      return rejectWithValue(error.message || 'Failed to fetch user info');
     }
   }
 );

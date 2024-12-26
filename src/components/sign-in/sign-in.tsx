@@ -108,7 +108,8 @@ const SignIn: React.FC = () => {
           if (fetchKakaoAccessToken.fulfilled.match(action)) {
             dispatch(fetchKakaoUserInfo())
               .then(() => {
-                localStorage.setItem('isAuthenticated', 'true');
+                // localStorage.setItem('isAuthenticated', 'true');
+                sessionStorage.setItem('isAuthenticated', 'true');
                 toast.success('Kakao 로그인 성공!');
                 navigate('/');
               });
